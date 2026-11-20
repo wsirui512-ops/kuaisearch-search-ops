@@ -1,4 +1,4 @@
-# Power BI 看板搭建手册（Power BI Desktop，免费）
+﻿# Power BI 看板搭建手册（Power BI Desktop，免费）
 
 > 目标：用 `outputs_public/` 里的聚合结果做出 5 页看板，导出 PDF + PNG 放进仓库；`.pbix` 体积大且 GitHub 不能预览，放在 GitHub Release。
 > 数据只有聚合指标，不含用户级记录。
@@ -33,6 +33,7 @@
 ### 2.3 先看目标样式
 
 打开 `dashboards/preview.html`（双击即可，无需任何软件），里面是同一份数据的 5 页静态版：KPI 卡片、条数效率双图、类目缺口、需求残差、机会清单。Power BI 版按这个版式做即可，做完后用它的数字逐项核对。
+> 需要 PDF 时：在浏览器里 `Ctrl+P` → 目标选"另存为 PDF"（已加打印样式，每页自动分页），存成 `dashboards/看板.pdf`。
 
 导入时：
 

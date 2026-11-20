@@ -301,6 +301,16 @@ def main() -> None:
   .chip {{ display:inline-block; padding:1px 7px; border-radius:999px; background:#fdece3; color:#b4450f; font-size:11px; }}
   .scroll {{ max-height:460px; overflow:auto; }}
   footer {{ padding:0 28px 30px; color:#9ca3af; font-size:11px; }}
+  @media print {{
+    body {{ background:#fff; }}
+    nav {{ display:none; }}
+    main {{ padding:0; }}
+    header {{ padding:12px 0 6px; }}
+    .page {{ border:none; box-shadow:none; padding:0 0 10px; margin:0; }}
+    .page + .page {{ break-before: page; page-break-before: always; }}
+    .card, .kpi, table {{ break-inside: avoid; page-break-inside: avoid; }}
+    footer {{ padding:0; }}
+  }}
 </style>
 </head>
 <body>

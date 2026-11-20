@@ -40,6 +40,7 @@
 
 - **质量断言**：39 项对账（请求=会话、曝光=求和、位置越界 0、意图覆盖 100%），任一失败 `run.py` 中止且不覆盖旧库。
 - **三路对账**：同一批数字用 DuckDB(库) / DuckDB(Parquet) / 纯 Python(聚合 CSV) 各算一遍，5 个核心指标全部一致（`outputs_public/engine_check.json`）。
+- **位置敏感性**：把位置也放进基准（条数 × 位置两层）后，Top 30 的缺口变化最大 0.009pp（`outputs_public/sensitivity_position.csv`）——"低点击是因为排在后面"这个解释被排除。
 - **第四引擎（Spark）**：Apache Spark 4.3.0 本地模式复算同一批指标，结果与 DuckDB 完全一致（`outputs_public/spark_check.json`）；启动 5.8s、聚合 1.4s/2.2s。详见 [技术栈](docs/tech-stack.md)。
 - **证据链**：Top 10 搜索词 × 10 个高曝光商品的审阅表已生成（`outputs/review_table.csv`，含标题、位置、点击与自动预筛），方法与判读见 [承接证据审阅](docs/evidence-review.md)。
 - **看板**：静态预览版 `dashboards/preview.html` 可直接打开，与 Power BI 目标版式一致。
@@ -75,6 +76,8 @@
 │   ├── verify_engines.py       # 三路对账 + 耗时，写 engine_check.json
 │   ├── setup_spark.ps1         # 免管理员安装 Spark 并修复 Windows 启动器
 │   ├── spark_check.py          # Spark 本地模式复算 + 与 DuckDB 对账
+│   ├── position_sensitivity.py # 条数 × 位置双层基准的敏感性复核
+│   ├── build_review_workbook.py# 生成带下拉勾选的审阅工作簿（xlsx）
 │   ├── build_review.py         # Top 10 词 × 10 商品审阅表
 │   ├── build_dashboard_data.py # 生成 Power BI 单文件数据源（xlsx）
 │   ├── build_dashboard_preview.py # 生成静态看板预览（html）
@@ -98,6 +101,7 @@ python scripts/verify_engines.py   # 三路对账（DuckDB / Parquet / Python）
 powershell -ExecutionPolicy Bypass -File scripts/setup_spark.ps1  # 可选：装 Spark（免管理员）
 python scripts/spark_check.py      # 可选：Spark 复算并与 DuckDB 对账
 python scripts/build_review.py     # Top 10 词 × 10 商品的承接审阅表
+python scripts/position_sensitivity.py    # 位置敏感性复核（条数 × 位置双层基准）
 python scripts/export_parquet.py   # 导出 Parquet（ClickHouse 对账或免重建查询用）
 python scripts/build_dashboard_data.py    # Power BI 单文件数据源（需要 openpyxl）
 python scripts/build_dashboard_preview.py # 静态看板预览
@@ -117,6 +121,7 @@ Power BI 5 页：总览 / 条数效率 / 类目效率 / 需求结构 / 机会清
 
 - 先看 `dashboards/preview.html`（双击打开，无需安装任何软件）：这是同一份数据的静态版，版式即目标。
 - 数据源：`dashboards/data/kuaisearch_dashboard.xlsx`（12 个 sheet，一次导入）。
+- 需要 PDF：浏览器打开预览后 `Ctrl+P` 另存为 PDF 即可（已加打印分页样式）。
 
 ## 限制（请先读这里）
 

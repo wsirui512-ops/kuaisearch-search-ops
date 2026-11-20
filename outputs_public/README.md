@@ -18,6 +18,7 @@
 | `relevance_summary.csv` | 标注对数、覆盖 query 数 | 同上 |
 | `review_coverage_summary.csv` | Top 10 词的审阅商品数、平均二字覆盖率、零覆盖占比 | 承接证据（不含标题） |
 | `engine_check.json` | 三路对账结果（DuckDB / Parquet / Python）与耗时 | 数字可复现的证明 |
+| `sensitivity_position.csv` | 条数 × 位置双层基准下 Top 30 的缺口变化 | 排除"位置造成缺口"的解释 |
 | `spark_check.json` | Spark 本地模式复算结果、耗时与对账状态 | 第四引擎对账 |
 | `quality.json` | 质量审计结果 | 数据可信度 |
 
