@@ -1,0 +1,36 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="760" height="420" viewBox="0 0 760 420" font-family="'Segoe UI', 'Microsoft YaHei', 'PingFang SC', sans-serif">
+<rect width="760" height="420" fill="#ffffff"/>
+<text x="24" y="34" font-size="18" font-weight="600" fill="#111827">结果条数越长，单件商品越难被点</text>
+<text x="24" y="56" font-size="12" fill="#6b7280">训练段：每次请求展示条数 × 商品点击率（点击商品 / 曝光商品）</text>
+<line x1="70" y1="330.0" x2="730" y2="330.0" stroke="#e5e7eb"/>
+<text x="60" y="334.0" font-size="11" fill="#6b7280" text-anchor="end">0.0%</text>
+<line x1="70" y1="265.0" x2="730" y2="265.0" stroke="#e5e7eb"/>
+<text x="60" y="269.0" font-size="11" fill="#6b7280" text-anchor="end">2.6%</text>
+<line x1="70" y1="200.0" x2="730" y2="200.0" stroke="#e5e7eb"/>
+<text x="60" y="204.0" font-size="11" fill="#6b7280" text-anchor="end">5.1%</text>
+<line x1="70" y1="135.0" x2="730" y2="135.0" stroke="#e5e7eb"/>
+<text x="60" y="139.0" font-size="11" fill="#6b7280" text-anchor="end">7.7%</text>
+<line x1="70" y1="70.0" x2="730" y2="70.0" stroke="#e5e7eb"/>
+<text x="60" y="74.0" font-size="11" fill="#6b7280" text-anchor="end">10.3%</text>
+<rect x="91.2" y="103.9" width="51.9" height="226.1" fill="#2f6fdd" rx="3"/>
+<text x="117.1" y="95.9" font-size="11" fill="#111827" text-anchor="middle">8.96%</text>
+<text x="117.1" y="352" font-size="11" fill="#6b7280" text-anchor="middle">01-10</text>
+<rect x="185.5" y="154.1" width="51.9" height="175.9" fill="#2f6fdd" rx="3"/>
+<text x="211.4" y="146.1" font-size="11" fill="#111827" text-anchor="middle">6.97%</text>
+<text x="211.4" y="352" font-size="11" fill="#6b7280" text-anchor="middle">11-20</text>
+<rect x="279.8" y="195.7" width="51.9" height="134.3" fill="#2f6fdd" rx="3"/>
+<text x="305.7" y="187.7" font-size="11" fill="#111827" text-anchor="middle">5.32%</text>
+<text x="305.7" y="352" font-size="11" fill="#6b7280" text-anchor="middle">21-30</text>
+<rect x="374.1" y="218.3" width="51.9" height="111.7" fill="#2f6fdd" rx="3"/>
+<text x="400.0" y="210.3" font-size="11" fill="#111827" text-anchor="middle">4.43%</text>
+<text x="400.0" y="352" font-size="11" fill="#6b7280" text-anchor="middle">31-40</text>
+<rect x="468.4" y="234.6" width="51.9" height="95.4" fill="#2f6fdd" rx="3"/>
+<text x="494.3" y="226.6" font-size="11" fill="#111827" text-anchor="middle">3.78%</text>
+<text x="494.3" y="352" font-size="11" fill="#6b7280" text-anchor="middle">41-60</text>
+<rect x="562.6" y="251.6" width="51.9" height="78.4" fill="#2f6fdd" rx="3"/>
+<text x="588.6" y="243.6" font-size="11" fill="#111827" text-anchor="middle">3.11%</text>
+<text x="588.6" y="352" font-size="11" fill="#6b7280" text-anchor="middle">61-100</text>
+<rect x="656.9" y="274.8" width="51.9" height="55.2" fill="#2f6fdd" rx="3"/>
+<text x="682.9" y="266.8" font-size="11" fill="#111827" text-anchor="middle">2.19%</text>
+<text x="682.9" y="352" font-size="11" fill="#6b7280" text-anchor="middle">100+</text>
+</svg>

@@ -1,0 +1,18 @@
+# 原始数据、处理中间表、用户级数据与自动输出默认不发布。
+/data/raw/*
+!/data/raw/README.md
+/data/processed/
+/outputs/
+outputs_public/*.duckdb
+/.work/
+/.venv/
+/.localdeps/
+/.deps/
+__pycache__/
+*.py[cod]
+.env
+.env.*
+!.env.example
+*.log
+*.pbix
+

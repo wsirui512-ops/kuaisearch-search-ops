@@ -1,0 +1,29 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="760" height="396" viewBox="0 0 760 396" font-family="'Segoe UI', 'Microsoft YaHei', 'PingFang SC', sans-serif">
+<rect width="760" height="396" fill="#ffffff"/>
+<text x="24" y="34" font-size="18" font-weight="600" fill="#111827">一级类目：按曝光结构校准后的点击缺口</text>
+<text x="24" y="56" font-size="12" fill="#6b7280">训练段：实际商品点击率与同条数期望之差（百分点）</text>
+<text x="180" y="104" font-size="12" fill="#111827" text-anchor="end">女装</text>
+<rect x="190" y="90" width="150.0" height="20" fill="#e8590c" rx="3" opacity="0.85"/>
+<text x="348.0" y="104" font-size="11" fill="#111827">+0.25pp (8791 次)</text>
+<text x="180" y="138" font-size="12" fill="#111827" text-anchor="end">男装</text>
+<rect x="190" y="124" width="248.4" height="20" fill="#e8590c" rx="3" opacity="0.85"/>
+<text x="446.4" y="138" font-size="11" fill="#111827">+0.41pp (4952 次)</text>
+<text x="180" y="172" font-size="12" fill="#111827" text-anchor="end">箱包/饰品</text>
+<rect x="190" y="158" width="275.8" height="20" fill="#e8590c" rx="3" opacity="0.85"/>
+<text x="473.8" y="172" font-size="11" fill="#111827">+0.46pp (4300 次)</text>
+<text x="180" y="206" font-size="12" fill="#111827" text-anchor="end">女鞋</text>
+<rect x="190" y="192" width="241.7" height="20" fill="#e8590c" rx="3" opacity="0.85"/>
+<text x="439.7" y="206" font-size="11" fill="#111827">+0.40pp (3163 次)</text>
+<text x="180" y="240" font-size="12" fill="#111827" text-anchor="end">男鞋</text>
+<rect x="190" y="226" width="438.1" height="20" fill="#e8590c" rx="3" opacity="0.85"/>
+<text x="636.1" y="240" font-size="11" fill="#111827">+0.73pp (2090 次)</text>
+<text x="180" y="274" font-size="12" fill="#111827" text-anchor="end">运动户外鞋服</text>
+<rect x="190" y="260" width="209.1" height="20" fill="#e8590c" rx="3" opacity="0.85"/>
+<text x="407.1" y="274" font-size="11" fill="#111827">+0.35pp (1632 次)</text>
+<text x="180" y="308" font-size="12" fill="#111827" text-anchor="end">玩具/早教益智</text>
+<rect x="190" y="294" width="246.1" height="20" fill="#e8590c" rx="3" opacity="0.85"/>
+<text x="444.1" y="308" font-size="11" fill="#111827">+0.41pp (956 次)</text>
+<text x="180" y="342" font-size="12" fill="#111827" text-anchor="end">节庆用品/礼品</text>
+<rect x="190" y="328" width="350.5" height="20" fill="#e8590c" rx="3" opacity="0.85"/>
+<text x="548.5" y="342" font-size="11" fill="#111827">+0.58pp (831 次)</text>
+</svg>
