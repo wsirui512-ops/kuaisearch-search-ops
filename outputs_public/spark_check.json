@@ -1,0 +1,52 @@
+{
+  "spark_version": "4.3.0",
+  "master": "local[4]",
+  "startup_seconds": 5.7,
+  "sessions_job_seconds": 4.1,
+  "values": {
+    "exposures": 17800904.0,
+    "clicks": 680790.0,
+    "item_ctr": 0.03824468689904737,
+    "request_click_rate": 0.5310330427519967,
+    "long_list_exposure_share": 0.4025664651637917
+  },
+  "category_job_seconds": 4.6,
+  "category_top5": [
+    {
+      "category": "女装",
+      "exposures": 3519127,
+      "clicks": 107211,
+      "item_ctr": 0.03046522617683306,
+      "expected_ctr": 0.03296335529799389
+    },
+    {
+      "category": "男装",
+      "exposures": 1197274,
+      "clicks": 38692,
+      "item_ctr": 0.03231674620847024,
+      "expected_ctr": 0.03645325212569301
+    },
+    {
+      "category": "箱包/饰品",
+      "exposures": 936296,
+      "clicks": 27513,
+      "item_ctr": 0.029384938096499398,
+      "expected_ctr": 0.03397853863355807
+    },
+    {
+      "category": "手机/数码/电脑办公",
+      "exposures": 927496,
+      "clicks": 39745,
+      "item_ctr": 0.0428519368277599,
+      "expected_ctr": 0.041709238412352745
+    },
+    {
+      "category": "家居生活",
+      "exposures": 905901,
+      "clicks": 36449,
+      "item_ctr": 0.04023508087528328,
+      "expected_ctr": 0.03967576572682767
+    }
+  ],
+  "failed_checks": []
+}

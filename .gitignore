@@ -1,4 +1,4 @@
-# 原始数据、处理中间表、用户级数据与自动输出默认不发布。
+﻿# 原始数据、处理中间表、用户级数据与自动输出默认不发布。
 /data/raw/*
 !/data/raw/README.md
 /data/processed/
@@ -8,6 +8,7 @@ outputs_public/*.duckdb
 /.work/
 /.venv/
 /.localdeps/
+/.spark/
 /.deps/
 __pycache__/
 *.py[cod]

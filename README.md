@@ -1,4 +1,4 @@
-# 快手电商搜索需求与转化效率诊断
+﻿# 快手电商搜索需求与转化效率诊断
 
 用 KuaiSearch-Lite 的真实搜索行为，回答一个运营问题：**哪些搜索需求有曝光、有需求，却没被结果页接住？**
 
@@ -40,6 +40,7 @@
 
 - **质量断言**：39 项对账（请求=会话、曝光=求和、位置越界 0、意图覆盖 100%），任一失败 `run.py` 中止且不覆盖旧库。
 - **三路对账**：同一批数字用 DuckDB(库) / DuckDB(Parquet) / 纯 Python(聚合 CSV) 各算一遍，5 个核心指标全部一致（`outputs_public/engine_check.json`）。
+- **第四引擎（Spark）**：Apache Spark 4.3.0 本地模式复算同一批指标，结果与 DuckDB 完全一致（`outputs_public/spark_check.json`）；启动 5.8s、聚合 1.4s/2.2s。详见 [技术栈](docs/tech-stack.md)。
 - **证据链**：Top 10 搜索词 × 10 个高曝光商品的审阅表已生成（`outputs/review_table.csv`，含标题、位置、点击与自动预筛），方法与判读见 [承接证据审阅](docs/evidence-review.md)。
 - **看板**：静态预览版 `dashboards/preview.html` 可直接打开，与 Power BI 目标版式一致。
 
@@ -72,6 +73,8 @@
 │   ├── download_data.py        # 官方文件下载 + SHA-256 校验
 │   ├── export_parquet.py       # 导出 fact/sessions 到 Parquet（跨引擎对账用）
 │   ├── verify_engines.py       # 三路对账 + 耗时，写 engine_check.json
+│   ├── setup_spark.ps1         # 免管理员安装 Spark 并修复 Windows 启动器
+│   ├── spark_check.py          # Spark 本地模式复算 + 与 DuckDB 对账
 │   ├── build_review.py         # Top 10 词 × 10 商品审阅表
 │   ├── build_dashboard_data.py # 生成 Power BI 单文件数据源（xlsx）
 │   ├── build_dashboard_preview.py # 生成静态看板预览（html）
@@ -92,6 +95,8 @@ python run.py                      # 重建数据库 + 导出聚合结果（本�
 
 # 可选：验证与展示
 python scripts/verify_engines.py   # 三路对账（DuckDB / Parquet / Python），写出 engine_check.json
+powershell -ExecutionPolicy Bypass -File scripts/setup_spark.ps1  # 可选：装 Spark（免管理员）
+python scripts/spark_check.py      # 可选：Spark 复算并与 DuckDB 对账
 python scripts/build_review.py     # Top 10 词 × 10 商品的承接审阅表
 python scripts/export_parquet.py   # 导出 Parquet（ClickHouse 对账或免重建查询用）
 python scripts/build_dashboard_data.py    # Power BI 单文件数据源（需要 openpyxl）
@@ -133,7 +138,7 @@ Power BI 5 页：总览 / 条数效率 / 类目效率 / 需求结构 / 机会清
 | [数据字典](docs/data-dictionary.md) | 字段、规模、质量审计、已知问题 |
 | [实验方案](docs/experiment-design.md) | 3 个动作的假设、分流、主/护栏指标、样本量 |
 | [Power BI 手册](docs/powerbi.md) | 导入、模型、DAX、5 页布局、导出 |
-| [技术栈](docs/tech-stack.md) | DuckDB 取舍、ClickHouse 对账资产与升级路径、为什么不上 Spark |
+| [技术栈](docs/tech-stack.md) | DuckDB 取舍、ClickHouse 对账资产、Spark 实测与选型建议 |
 | [面试材料](docs/interview.md) | 30 秒/2 分钟讲法、10 个追问、简历表述 |
 | [路线图](docs/roadmap.md) | 阶段计划、当前进度与验收标准 |
 

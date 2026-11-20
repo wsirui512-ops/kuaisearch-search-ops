@@ -103,13 +103,52 @@ docker exec -i ch clickhouse-client --multiquery < sql/clickhouse/03_verify.sql
 
 把第 5 步的结果与 `outputs_public/engine_check.json` 对比，差异为 0 后，再把"ClickHouse 交叉校验"写进简历。
 
-## 4. Spark：为什么不做
+## 4. Spark：本机已跑通，但不当主线
 
-- 3 GB 数据用 Spark 属于过度设计，面试官第一个问题就是"为什么不用 DuckDB/单机"。
-- Windows 上跑 PySpark 需要 Java 17 + winutils/hadoop.dll，环境成本高、收益低。
-- 数据运营岗的 JD 里 Spark 出现频率远低于 SQL / BI 工具。
+### 4.1 实测结果（2026-11-20，local[4]）
 
-**如果未来一定要写 Spark**：只有一条合理路径——处理官方全量（约 107 GB）而不是 Lite。届时用 Parquet 分区（`split` / 相对时间段）+ Spark SQL 重跑同一套 marts，并给出"全量 vs Lite 的指标差异与耗时"。在此之前不碰。
+| 项 | 值 |
+| --- | --- |
+| 环境 | Java 21.0.12.1 + Apache Spark 4.3.0（bin-hadoop3）+ py4j 0.10.9.9 |
+| 启动耗时 | 5.8 s |
+| sessions 聚合（556k 行） | 1.4 s |
+| 类目 × 条数分层（17.8M 曝光） | 2.2 s |
+| 5 个核心指标与 DuckDB 对账 | **PASS（完全一致）** |
+| 结果文件 | `outputs_public/spark_check.json` |
+
+**反直觉但重要**：这台机器装不了 ClickHouse（缺容器/管理员），却**能跑 Spark**——它只需要 Java，不需要 Docker、不需要 WSL、不需要管理员。所以"用 Spark 替代 ClickHouse"在环境上是成立的。
+
+### 4.2 但仍然不建议把它当主线
+
+- 3 GB 数据用 Spark 是过度设计：DuckDB 从原始 JSONL 重建全部 marts 只要 40 秒，Spark 光启动就 5.8 秒、还要额外 1.6 GB 磁盘。
+- 上面的耗时**不能直接比较**：DuckDB 那 40 秒包含解析 3 GB JSONL、建 17.8M 行曝光表和全部导出；Spark 只是在已转好的 Parquet 上做聚合。
+- 面试官会问"为什么这么小的数据用 Spark"，答不好是负分。
+
+### 4.3 什么时候真该用 Spark
+
+- 处理官方**全量 107 GB**（而不是 Lite）：Parquet 分区（`split` / 相对时间段）+ Spark SQL 重跑同一套 marts，给出"全量 vs Lite"的差异与耗时；
+- 目标 JD 明确写了 Spark / Hive / 离线数仓；
+- 需要多机横向扩展或已有集群。
+
+### 4.4 Windows 踩坑记录（已解决，可复现）
+
+| 坑 | 现象 | 解决 |
+| --- | --- | --- |
+| SPARK_HOME 含中文 | `spark-submit.cmd` → `ClassNotFoundException: SparkSubmit` | 用直接调用 `java -cp "%SPARK_HOME%\jars\*"` 的 wrapper 替换 `bin/spark-submit.cmd`（`scripts/setup_spark.ps1` 自动处理） |
+| py4j 不再自带 | `ModuleNotFoundError: py4j` | 单独安装 py4j |
+| `tempfile.mkdtemp` 目录不可写 | 启动时报 `Permission denied` | 用 `os.makedirs` 替代 mkdtemp（脚本内已处理） |
+| 缺 winutils | 启动 WARN | 本地读写 Parquet 不需要，可忽略 |
+| 内存/分区 | 默认配置偏大 | `driver 2g`、`shuffle.partitions=4` |
+
+### 4.5 结论：怎么选
+
+| 想要的东西 | 选什么 | 理由 |
+| --- | --- | --- |
+| 面试讲"服务层/并发查询" | ClickHouse（等 Docker/WSL） | 列存服务端、点查快，链路完整 |
+| 面试讲"离线大数据/数仓" | Spark（本机即可跑） | 只要 Java；能讲分区、shuffle、对账 |
+| 只想把项目做扎实 | 都不加 | DuckDB + SQL + 看板已经够用，硬加反而稀释重点 |
+
+如果只能加一个、且环境不改：**加 Spark**（能真正跑起来、能出对账结果），但必须按 4.3 的框架讲，不能吹"大数据量"。
 
 ## 5. 面试怎么讲这段（30 秒版）
 

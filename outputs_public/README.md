@@ -1,4 +1,4 @@
-# 可公开聚合结果
+﻿# 可公开聚合结果
 
 本目录是仓库里唯一发布的数据层：全部为聚合指标，**不含用户级记录、不含完整 query 字典**。
 
@@ -18,6 +18,7 @@
 | `relevance_summary.csv` | 标注对数、覆盖 query 数 | 同上 |
 | `review_coverage_summary.csv` | Top 10 词的审阅商品数、平均二字覆盖率、零覆盖占比 | 承接证据（不含标题） |
 | `engine_check.json` | 三路对账结果（DuckDB / Parquet / Python）与耗时 | 数字可复现的证明 |
+| `spark_check.json` | Spark 本地模式复算结果、耗时与对账状态 | 第四引擎对账 |
 | `quality.json` | 质量审计结果 | 数据可信度 |
 
 重新生成：`python run.py`（会同时重建 `outputs/` 本地全量与 `data/processed/kuaisearch.duckdb`）。

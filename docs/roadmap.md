@@ -20,7 +20,7 @@
 | P2 机会诊断 v2 | ✅ 完成 | 124 个候选（74 个 q<0.05），Top 30 已导出 |
 | P3 证据链（人工审阅） | 🟡 自动预筛完成 | 100 行审阅表已生成（`outputs/review_table.csv`），等人工填 1/0/0.5 |
 | P4 看板 | 🟡 资产就绪 | 静态预览 `dashboards/preview.html` + 单文件数据源 xlsx 已生成；等你在 Power BI 里搭 5 页 |
-| P5 技术栈增强 | 🟡 对账已完成 | 三路对账 0 差异；ClickHouse 装载 SQL 与 Parquet 已就绪，等 Docker 后 30 分钟收尾 |
+| P5 技术栈增强 | 🟡 Spark 已跑通 | 三路对账 0 差异；Spark 4.3 本地复算 0 差异；ClickHouse 仍需容器环境 |
 | P6 报告与发布 | 🟡 大部分完成 | 报告、README、字典、口径、实验方案已就绪；缺看板截图与 GitHub 发布 |
 | P7 面试打磨 | 🟡 初稿完成 | [面试材料](interview.md) 已写，需按真实讲练调整 |
 
