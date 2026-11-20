@@ -40,6 +40,7 @@
 
 - **质量断言**：39 项对账（请求=会话、曝光=求和、位置越界 0、意图覆盖 100%），任一失败 `run.py` 中止且不覆盖旧库。
 - **三路对账**：同一批数字用 DuckDB(库) / DuckDB(Parquet) / 纯 Python(聚合 CSV) 各算一遍，5 个核心指标全部一致（`outputs_public/engine_check.json`）。
+- **确定性导出**：导出统一保留 10 位有效数字并加稳定排序键，连续两次全量重建的 14 个公开 CSV 哈希完全一致（耗时类字段除外）。
 - **位置敏感性**：把位置也放进基准（条数 × 位置两层）后，Top 30 的缺口变化最大 0.009pp（`outputs_public/sensitivity_position.csv`）——"低点击是因为排在后面"这个解释被排除。
 - **第四引擎（Spark）**：Apache Spark 4.3.0 本地模式复算同一批指标，结果与 DuckDB 完全一致（`outputs_public/spark_check.json`）；启动 5.8s、聚合 1.4s/2.2s。详见 [技术栈](docs/tech-stack.md)。
 - **证据链**：Top 10 搜索词 × 10 个高曝光商品的审阅表已生成（`outputs/review_table.csv`，含标题、位置、点击与自动预筛），方法与判读见 [承接证据审阅](docs/evidence-review.md)。

@@ -1,4 +1,4 @@
-"""Build the local KuaiSearch-Lite analysis database and export aggregate results.
+﻿"""Build the local KuaiSearch-Lite analysis database and export aggregate results.
 
 Design notes
 ------------
@@ -60,7 +60,7 @@ ZERO_CHECKS = (
 EXPORTS = [
     ("overview", "SELECT * FROM overview ORDER BY split", True),
     ("length_strata", "SELECT * FROM length_strata ORDER BY split, length_stratum", True),
-    ("intent_metrics", "SELECT * FROM intent_metrics ORDER BY split, requests DESC", True),
+    ("intent_metrics", "SELECT * FROM intent_metrics ORDER BY split, requests DESC, intent", True),
     (
         "intent_residuals",
         """
@@ -74,17 +74,17 @@ EXPORTS = [
         FROM intent_metrics AS m
         JOIN intent_expected AS e USING (intent)
         WHERE m.split = 'train'
-        ORDER BY gap_clicks DESC
+        ORDER BY gap_clicks DESC, m.intent
         """,
         True,
     ),
-    ("category_metrics", "SELECT * FROM category_metrics ORDER BY split, exposures DESC", True),
+    ("category_metrics", "SELECT * FROM category_metrics ORDER BY split, exposures DESC, category_id", True),
     (
         "relative_time_metrics",
         "SELECT * FROM relative_time_metrics ORDER BY split, time_bucket",
         True,
     ),
-    ("age_metrics", "SELECT * FROM age_metrics ORDER BY split, requests DESC", True),
+    ("age_metrics", "SELECT * FROM age_metrics ORDER BY split, requests DESC, age_bucket", True),
     ("relevance_coverage", "SELECT * FROM relevance_coverage ORDER BY split, score", True),
     ("relevance_summary", "SELECT * FROM relevance_summary", True),
     ("stratum_baseline", "SELECT * FROM stratum_baseline ORDER BY length_stratum", True),
@@ -99,11 +99,11 @@ EXPORTS = [
         FROM category_metrics AS c
         JOIN category_expected AS e USING (category)
         WHERE c.split = 'train'
-        ORDER BY gap_clicks DESC
+        ORDER BY gap_clicks DESC, c.category_id
         """,
         True,
     ),
-    ("query_metrics", "SELECT * FROM query_metrics ORDER BY split, exposures DESC", False),
+    ("query_metrics", "SELECT * FROM query_metrics ORDER BY split, exposures DESC, query_key", False),
     (
         "intent_review_sample",
         """
@@ -147,12 +147,23 @@ def _sql_path(path: Path) -> str:
     return str(path).replace("'", "''").replace("\\", "/")
 
 
+def _stable(value):
+    """Collapse parallel-aggregation float noise so exports diff cleanly.
+
+    Ten significant digits keeps small p-values (1e-52) intact while removing the
+    last-bit differences that change between runs with different thread scheduling.
+    """
+    if isinstance(value, float):
+        return float(f"{value:.10g}")
+    return value
+
+
 def _write_rows(path: Path, columns: list[str], rows: list[tuple]) -> None:
     path.parent.mkdir(parents=True, exist_ok=True)
     with path.open("w", encoding="utf-8-sig", newline="") as stream:
         writer = csv.writer(stream)
         writer.writerow(columns)
-        writer.writerows(rows)
+        writer.writerows(tuple(_stable(value) for value in row) for row in rows)
 
 
 def _write_query(conn: duckdb.DuckDBPyConnection, sql: str, path: Path) -> int:
@@ -170,7 +181,7 @@ def _build_opportunities(conn: duckdb.DuckDBPyConnection) -> list[tuple]:
         "SELECT item_ctr FROM overview WHERE split = 'test'"
     ).fetchone()[0]
     rows = conn.execute(
-        "SELECT * FROM opportunities_base WHERE gap_clicks > 0 ORDER BY gap_clicks DESC"
+        "SELECT * FROM opportunities_base WHERE gap_clicks > 0 ORDER BY gap_clicks DESC, query_key"
     ).fetchall()
     columns = [description[0] for description in conn.description]
     index = {name: position for position, name in enumerate(columns)}

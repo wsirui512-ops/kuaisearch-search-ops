@@ -1,30 +1,30 @@
 {
-  "verified_at": "2026-11-20 22:53:20",
+  "verified_at": "2026-11-20 22:58:26",
   "metrics": {
     "exposures": {
       "value": 17800904.0,
-      "duckdb_db_ms": 0.9,
-      "duckdb_parquet_ms": 3.1
+      "duckdb_db_ms": 0.6,
+      "duckdb_parquet_ms": 2.2
     },
     "clicks": {
       "value": 680790.0,
-      "duckdb_db_ms": 0.7,
-      "duckdb_parquet_ms": 2.4
+      "duckdb_db_ms": 0.5,
+      "duckdb_parquet_ms": 2.0
     },
     "item_ctr": {
       "value": 0.03824468689904737,
-      "duckdb_db_ms": 1.1,
-      "duckdb_parquet_ms": 3.7
+      "duckdb_db_ms": 0.9,
+      "duckdb_parquet_ms": 3.0
     },
     "request_click_rate": {
       "value": 0.5310330427519967,
-      "duckdb_db_ms": 1.6,
-      "duckdb_parquet_ms": 4.8
+      "duckdb_db_ms": 1.5,
+      "duckdb_parquet_ms": 3.2
     },
     "long_list_exposure_share": {
       "value": 0.4025664651637917,
-      "duckdb_db_ms": 1.4,
-      "duckdb_parquet_ms": 5.1
+      "duckdb_db_ms": 1.5,
+      "duckdb_parquet_ms": 3.3
     }
   },
   "failed_checks": 0
