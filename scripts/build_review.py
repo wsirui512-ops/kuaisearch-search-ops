@@ -1,4 +1,4 @@
-"""Build the query x product review table for the top opportunities (P3 evidence chain).
+﻿"""Build the query x product review table for the top opportunities (P3 evidence chain).
 
 For each of the top 10 search terms, sample the 10 most-exposed products and attach what a
 human reviewer needs: title, brand, category, exposure/click counts, average list position,
@@ -60,7 +60,7 @@ def main() -> None:
                     SELECT session_id FROM sessions WHERE query = ? AND split = 'train'
                 )
                 GROUP BY 1, 2, 3, 4, 5
-                ORDER BY exposures DESC
+                ORDER BY exposures DESC, f.item_id
                 LIMIT 10
                 """,
                 [query],

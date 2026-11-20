@@ -1,0 +1,34 @@
+name: checks
+
+on:
+  push:
+  pull_request:
+
+jobs:
+  artifacts:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - name: Install dependencies
+        run: pip install -r requirements.txt
+
+      - name: Byte-compile sources
+        run: python -m compileall -q src scripts
+
+      - name: Regenerate README charts
+        run: python scripts/make_charts.py
+
+      - name: Regenerate dashboard preview
+        run: python scripts/build_dashboard_preview.py
+
+      - name: Committed artifacts must match the code
+        run: |
+          git diff --exit-code -- docs/images dashboards/preview.html
+
+      - name: Position sensitivity runs from the committed database? (skipped without data)
+        run: echo "Full pipeline needs the 3.1 GB raw files; see README 快速开始."
