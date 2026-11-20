@@ -44,6 +44,31 @@ gap_pp 为百分点数值（1.47 表示 1.47pp），不是百分比，不要再�
 数据为公开聚合结果，不含用户级明细。完整口径见 docs/metrics.md。
 """
 
+TEXT_COLUMNS = {
+    "query",
+    "query_key",
+    "split",
+    "category",
+    "intent",
+    "length_stratum",
+    "validation",
+    "age_bucket",
+    "flag",
+}
+
+
+def parse_value(name: str, raw: str):
+    """Keep labels as text, store the rest as numbers so Power BI can aggregate them."""
+    if name in TEXT_COLUMNS or raw == "":
+        return raw or None
+    try:
+        return int(raw)
+    except ValueError:
+        try:
+            return float(raw)
+        except ValueError:
+            return raw
+
 
 def main() -> None:
     TARGET.parent.mkdir(parents=True, exist_ok=True)
@@ -59,14 +84,16 @@ def main() -> None:
         with path.open(encoding="utf-8-sig") as stream:
             rows = list(csv.reader(stream))
         sheet = workbook.create_sheet(sheet_name)
+        header = rows[0]
         for r, row in enumerate(rows, start=1):
             for c, value in enumerate(row, start=1):
-                cell = sheet.cell(row=r, column=c, value=value)
                 if r == 1:
+                    cell = sheet.cell(row=r, column=c, value=value)
                     cell.font = Font(bold=True, color="FFFFFF")
                     cell.fill = PatternFill("solid", fgColor="2F6FDD")
                     cell.alignment = Alignment(horizontal="center")
-        header = rows[0]
+                else:
+                    sheet.cell(row=r, column=c, value=parse_value(header[c - 1], value))
         for index, name in enumerate(header, start=1):
             letter = get_column_letter(index)
             width = max(len(str(name)) * 2 + 4, 12)

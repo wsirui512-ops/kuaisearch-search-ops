@@ -23,7 +23,35 @@
 
 ## 3. ClickHouse：为什么不在这版里
 
-**阻塞原因**：本机没有 Docker，也没有 WSL2；Windows 原生安装 ClickHouse 需要额外环境，属于本次交付之外的成本。
+**阻塞原因（已逐项核实，2026-11-20）**
+
+1. **ClickHouse 没有官方 Windows 原生版**：官方只提供 Linux / macOS / Docker / Cloud。实测两个下载入口都被拒：`builds.clickhouse.com/master/win64/clickhouse.exe` → 403，GitHub Release 的 `clickhouse-windows-amd64.exe` → 404。把 ClickHouse 嵌进 Python 的 `chdb` 也**没有任何 Windows wheel**（扫过全部版本）。
+2. **本机没有容器/虚拟化层**：未安装 Docker；`wsl` 命令存在，但 `wsl -l -v` 返回 **E_ACCESSDENIED**（WSL 功能未启用）。
+3. **当前会话无管理员权限**：`IsInRole(Administrator) = False`，`Get-CimInstance` 同样被拒绝。启用 WSL2/Hyper-V、安装 Docker Desktop 都需要管理员 + 重启。
+
+所以不是"安装包下载失败"，而是**缺一层 Linux 运行环境，而补上它需要管理员权限**。
+
+**解决方案（按成本排序）**
+
+| 方案 | 成本 | 说明 |
+| --- | --- | --- |
+| A. 启用 WSL2 + 官方单文件二进制（推荐） | 管理员 + 1 次重启，约 40–60 分钟 | `wsl --install -d Ubuntu` → 进 Ubuntu 执行 `curl https://clickhouse.com/ | sh` → 直接 `clickhouse local` 读 Parquet，**不需要 Docker** |
+| B. GitHub Codespaces | 0 安装，浏览器即可 | 云端 Linux 里装 ClickHouse，上传 `exports/parquet` 或现场生成，跑同一套 SQL |
+| C. ClickHouse Cloud 免费试用 | 注册账号（可能要信用卡） | 走 HTTP 接口把 Parquet POST 进去；`file()` 在 Cloud 被禁用，需改用 HTTP 上传 |
+| D. 保持现状 | 0 | 三路对账已通过；简历不写 ClickHouse，只写"SQL 与对账脚本已备好，环境受限未部署" |
+
+方案 A 的对账命令（不需要建表，直接读 Parquet）：
+
+```bash
+cd /mnt/c/Users/26431/Documents/ChatGPT/项目二
+./clickhouse local --query "
+SELECT sum(impressions), sum(clicks), sum(clicks)/sum(impressions),
+       countIf(clicks>0)/count(),
+       sumIf(impressions, length_stratum='100+')/sum(impressions)
+FROM file('exports/parquet/sessions.parquet','Parquet')"
+```
+
+预期：`17800904 / 680790 / 0.038245 / 0.531033 / 0.402566`。
 
 **计划（P5，1.5 人天，装好 Docker 后）**
 
