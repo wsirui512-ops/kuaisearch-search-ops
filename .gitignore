@@ -3,6 +3,7 @@
 !/data/raw/README.md
 /data/processed/
 /outputs/
+/exports/
 outputs_public/*.duckdb
 /.work/
 /.venv/

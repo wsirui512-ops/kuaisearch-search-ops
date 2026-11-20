@@ -36,6 +36,13 @@
 | 通过样本门槛且存在正缺口的搜索词 | 124 个（74 个 q<0.05） |
 | Top 30 缺口点击 | ~6,416 次 / 64.6 万曝光（~1.0%） |
 
+## 已完成的验证
+
+- **质量断言**：39 项对账（请求=会话、曝光=求和、位置越界 0、意图覆盖 100%），任一失败 `run.py` 中止且不覆盖旧库。
+- **三路对账**：同一批数字用 DuckDB(库) / DuckDB(Parquet) / 纯 Python(聚合 CSV) 各算一遍，5 个核心指标全部一致（`outputs_public/engine_check.json`）。
+- **证据链**：Top 10 搜索词 × 10 个高曝光商品的审阅表已生成（`outputs/review_table.csv`，含标题、位置、点击与自动预筛），方法与判读见 [承接证据审阅](docs/evidence-review.md)。
+- **看板**：静态预览版 `dashboards/preview.html` 可直接打开，与 Power BI 目标版式一致。
+
 ## 方法：先校准口径，再谈机会
 
 1. **两个分母严格分开**：商品点击率（点击/曝光）≠ 请求点击率（有点击的请求/请求）。
@@ -55,18 +62,25 @@
 │   ├── 01_staging.sql          # 原始表清洗 + 质量审计
 │   ├── 02_intermediate.sql     # 请求层、曝光层（含位置）、维度、需求标签
 │   ├── 03_marts.sql            # 总览、条数分层、类目、需求、机会、时间、年龄
-│   └── 04_quality.sql          # 对账断言（任一失败即中止）
+│   ├── 04_quality.sql          # 对账断言（任一失败即中止）
+│   └── clickhouse/             # ClickHouse 建表 / 装载 / 校验 SQL（环境就绪即可跑）
 ├── src/
 │   ├── pipeline.py             # 临时库构建 + 原子替换 + 导出
 │   └── stats.py                # Wilson / 双比例检验 / BH-FDR
 ├── config/intent_rules.csv     # 需求标签规则
 ├── scripts/
 │   ├── download_data.py        # 官方文件下载 + SHA-256 校验
+│   ├── export_parquet.py       # 导出 fact/sessions 到 Parquet（跨引擎对账用）
+│   ├── verify_engines.py       # 三路对账 + 耗时，写 engine_check.json
+│   ├── build_review.py         # Top 10 词 × 10 商品审阅表
+│   ├── build_dashboard_data.py # 生成 Power BI 单文件数据源（xlsx）
+│   ├── build_dashboard_preview.py # 生成静态看板预览（html）
 │   └── make_charts.py          # README 图表（无第三方依赖）
-├── outputs/                    # 本地全量（含 query 明细，不发布）
-├── outputs_public/             # 可公开的聚合结果
-├── dashboards/                 # Power BI 看板（PDF/截图，手册见 docs/powerbi.md）
-└── docs/                       # 报告、口径、字典、实验、技术栈、路线图
+├── outputs/                    # 本地全量（含 query 明细与商品标题，不发布）
+├── outputs_public/             # 可公开的聚合结果 + 对账 JSON
+├── exports/                    # Parquet 中间产物（不发布）
+├── dashboards/                 # preview.html + Power BI 数据源 + 手册
+└── docs/                       # 报告、口径、字典、证据、实验、技术栈、面试
 ```
 
 ## 快速开始
@@ -75,19 +89,29 @@
 python -m pip install -r requirements.txt
 python scripts/download_data.py    # 下载官方 4 份 Lite 文件并校验 SHA-256（约 3.1 GB）
 python run.py                      # 重建数据库 + 导出聚合结果（本机约 40 秒）
+
+# 可选：验证与展示
+python scripts/verify_engines.py   # 三路对账（DuckDB / Parquet / Python），写出 engine_check.json
+python scripts/build_review.py     # Top 10 词 × 10 商品的承接审阅表
+python scripts/export_parquet.py   # 导出 Parquet（ClickHouse 对账或免重建查询用）
+python scripts/build_dashboard_data.py    # Power BI 单文件数据源（需要 openpyxl）
+python scripts/build_dashboard_preview.py # 静态看板预览
 python scripts/make_charts.py      # 重新生成 README 图表
 ```
 
 运行后：
 
 - `data/processed/kuaisearch.duckdb`：本地分析库（不发布）
-- `outputs/`：全量结果（含 query 明细，不发布）
+- `outputs/`：全量结果（含 query 明细与商品标题，不发布）
 - `outputs_public/`：可公开聚合结果（看板数据源）
 - `outputs/quality.json`：质量审计结果（任一断言失败，`run.py` 会中止且不覆盖旧库）
 
 ## 看板
 
 Power BI 5 页：总览 / 条数效率 / 类目效率 / 需求结构 / 机会清单。搭建步骤、数据模型与 DAX 见 [Power BI 手册](docs/powerbi.md)。
+
+- 先看 `dashboards/preview.html`（双击打开，无需安装任何软件）：这是同一份数据的静态版，版式即目标。
+- 数据源：`dashboards/data/kuaisearch_dashboard.xlsx`（12 个 sheet，一次导入）。
 
 ## 限制（请先读这里）
 
@@ -104,12 +128,14 @@ Power BI 5 页：总览 / 条数效率 / 类目效率 / 需求结构 / 机会清
 | 文档 | 内容 |
 | --- | --- |
 | [分析报告](docs/analysis-report.md) | 完整业务报告：结论、证据、动作、限制 |
+| [承接证据审阅](docs/evidence-review.md) | 商品级审阅表怎么读、怎么填、能得出什么 |
 | [指标口径](docs/metrics.md) | 每个指标的分母、公式与使用边界 |
 | [数据字典](docs/data-dictionary.md) | 字段、规模、质量审计、已知问题 |
 | [实验方案](docs/experiment-design.md) | 3 个动作的假设、分流、主/护栏指标、样本量 |
 | [Power BI 手册](docs/powerbi.md) | 导入、模型、DAX、5 页布局、导出 |
-| [技术栈](docs/tech-stack.md) | DuckDB 取舍、ClickHouse 升级路径、为什么不上 Spark |
-| [路线图](docs/roadmap.md) | 阶段计划与验收标准 |
+| [技术栈](docs/tech-stack.md) | DuckDB 取舍、ClickHouse 对账资产与升级路径、为什么不上 Spark |
+| [面试材料](docs/interview.md) | 30 秒/2 分钟讲法、10 个追问、简历表述 |
+| [路线图](docs/roadmap.md) | 阶段计划、当前进度与验收标准 |
 
 ## 许可
 

@@ -1,4 +1,4 @@
-﻿# 技术栈选型与验证记录
+# 技术栈选型与验证记录
 
 原则：**只写实际跑过、能解释取舍的技术**。没跑过的不进简历，也不写进"已完成"。
 
@@ -34,6 +34,46 @@
 5. 在报告里写清楚：ClickHouse 在这里的价值是**服务层/并发**，不是"数据大到 DuckDB 跑不动"。
 
 **如果最终装不上 Docker**：如实降级——用 `EXPLAIN ANALYZE` + 纯 Python 聚合做交叉校验（同样能证明数字可复现），并在 README 写明"未使用 ClickHouse"。**不要把没跑过的技术写进简历。**
+
+## 3.1 本版实际完成的验证（2026-11-20）
+
+ClickHouse 仍未运行（环境阻塞已核实：无 Docker、WSL 被系统禁用、Windows 单文件二进制下载被拒）。但把"可验证"的部分做了，并留下 30 分钟可跑完的资产：
+
+**已生成**
+
+| 资产 | 说明 |
+| --- | --- |
+| `exports/parquet/sessions.parquet` | 555,553 行，4.9 MB |
+| `exports/parquet/fact.parquet` | 17,800,904 行，159.2 MB（ZSTD） |
+| `sql/clickhouse/01_create.sql` | ClickHouse 建库建表 DDL（MergeTree） |
+| `sql/clickhouse/02_load.sql` | 从 Parquet 装载 |
+| `sql/clickhouse/03_verify.sql` | 5 个核心指标的 ClickHouse 版本 SQL + 期望值 |
+| `scripts/verify_engines.py` | 三路对账：DuckDB(库) / DuckDB(Parquet) / Python(聚合 CSV) |
+| `outputs_public/engine_check.json` | 对账结果与耗时（可公开） |
+
+**对账结果**：5 个指标（曝光、点击、商品点击率、请求点击率、100+ 条曝光占比）三路完全一致，**failed_checks = 0**。
+
+| 指标 | 值 | DuckDB(库) | DuckDB(Parquet) |
+| --- | --- | --- | --- |
+| exposures | 17,800,904 | 0.8 ms | 2.5 ms |
+| clicks | 680,790 | 0.8 ms | 2.5 ms |
+| item_ctr | 3.8245% | 1.3 ms | 3.3 ms |
+| request_click_rate | 53.103% | 2.0 ms | 4.0 ms |
+| long_list_exposure_share | 40.257% | 1.7 ms | 4.4 ms |
+
+> 说明：这是已预热的小查询，Parquet 反而略慢（多一层反序列化），**不构成引擎对比结论**。真正的对比要等 ClickHouse 装载后按同一 SQL 计 3 次取中位数。
+
+**装好 Docker 后的收尾（30–60 分钟）**
+
+```powershell
+docker run -d --name ch -p 8123:8123 -p 9000:9000 clickhouse/clickhouse-server:latest
+python scripts/export_parquet.py
+docker exec -i ch clickhouse-client --multiquery < sql/clickhouse/01_create.sql
+docker exec -i ch clickhouse-client --multiquery < sql/clickhouse/02_load.sql
+docker exec -i ch clickhouse-client --multiquery < sql/clickhouse/03_verify.sql
+```
+
+把第 5 步的结果与 `outputs_public/engine_check.json` 对比，差异为 0 后，再把"ClickHouse 交叉校验"写进简历。
 
 ## 4. Spark：为什么不做
 

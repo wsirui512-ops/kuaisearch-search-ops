@@ -1,17 +1,28 @@
 # 看板目录
 
-Power BI 看板为 P4 阶段的交付物，当前版本已提供：
+Power BI 看板按 [docs/powerbi.md](../docs/powerbi.md) 搭建。当前已交付：
 
-- **数据源**：`outputs_public/`（聚合、可公开，无用户级数据）
-- **搭建手册**：[docs/powerbi.md](../docs/powerbi.md)（导入、模型、DAX、5 页布局、导出）
-- **占位图表**：`docs/images/chart_*.svg`（README 使用，看板完成后可替换为看板截图）
+| 文件 | 说明 |
+| --- | --- |
+| `preview.html` | **静态看板预览**：双击即可打开，5 页 + 相对时间附录，样式即 Power BI 的目标版式 |
+| `data/kuaisearch_dashboard.xlsx` | **Power BI 单文件数据源**：12 个 sheet（说明 + 11 张表），一次连接全部导入 |
+| `README.md` | 本文件 |
 
-## 完成后的目录约定
+生成命令：
+
+```powershell
+python scripts/build_dashboard_data.py     # 重新生成 xlsx（需要 openpyxl）
+python scripts/build_dashboard_preview.py  # 重新生成 preview.html（零依赖）
+```
+
+## 完成 Power BI 后的目录约定
 
 ```
 dashboards/
 ├── 看板.pdf            # 5 页导出的 PDF
 ├── images/             # 每页 PNG 截图（1600×900）
+├── data/kuaisearch_dashboard.xlsx
+├── preview.html
 └── README.md
 ```
 
