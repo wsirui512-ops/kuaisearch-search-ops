@@ -122,8 +122,14 @@ python scripts/make_charts.py      # 重新生成 README 图表
 已制作 Power BI Desktop 八页报告：总览 / 条数效率 / 品类残差 / 需求标签 / 机会清单 / 标题预筛 / 相对时间 / 运营动作。本机文件为 `dashboards/kuaisearch-search-ops.pbix`，其中含 Top 30 搜索词。`.pbix` 被 `.gitignore` 排除，克隆仓库不会获得它；确认数据许可和词级内容后，计划通过 GitHub Release 附件或网盘提供下载。搭建与口径见 [Power BI 手册](docs/powerbi.md)。
 
 - 先看 [静态看板](dashboards/preview.html)（双击打开，无需安装任何软件）；`docs-site/index.html` 是 GitHub Pages 准备稿。
+- [八页 PDF](dashboards/看板.pdf) 与下方截图来自本机 Power BI Desktop 导出，克隆仓库后可直接查看。
 - 数据源：`dashboards/data/kuaisearch_dashboard.xlsx`（本版导入 11 张数据表；未导入年龄表）。
-- 需要静态 PDF：浏览器打开预览后 `Ctrl+P` 另存为 PDF（五页预览；八页 Power BI 导出尚待完成）。
+  
+![列表条数效率页](dashboards/images/page02.png)
+
+![品类残差页](dashboards/images/page03.png)
+
+PDF 第 5 页含 Top 30 搜索词；示例词为样本中的高频泛词，公开前仍需核实其脱敏与再分发许可。
 
 ## 口径与边界
 

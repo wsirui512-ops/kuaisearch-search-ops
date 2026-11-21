@@ -6,13 +6,14 @@
 - [x] `.gitignore` 排除原始数据、DuckDB、Parquet、`outputs/`、`.pbix`；公开聚合与看板文件可跟踪。
 - [x] `git status --short` 中无 `data/raw`、`data/processed`、`outputs/`、`exports/` 文件。
 - [x] `python scripts/apply_spotcheck.py` 对未填表报错，且无公开抽检汇总。
+- [x] Power BI 八页 PDF 与八张 1600×900 截图已生成；第 6 页旧判断表已从展示页移除。
 
 ## B 需要项目作者人工确认
 
 - [ ] 核实数据集许可是否允许公开聚合结果和示例搜索词；记录许可页与核实日期。
 - [ ] 审阅 `outputs_public/`、`dashboards/preview.html`、PDF、截图、数据源 XLSX 中的 query，确认不含敏感词。
 - [ ] 决定 `.pbix` 是否公开；若公开，先检查其嵌入模型与附件内容。
-- [ ] 在安装 Power BI Desktop 的电脑打开本地 `.pbix`，导出八页 PDF 与 1600×900 截图，并检查 Top 30 词是否需要脱敏。
+- [ ] 检查 PDF、八张截图中的 Top 30 词是否需要脱敏；尤其复核第 5 页。
 - [ ] 填 `outputs/spotcheck_30.xlsx` 的 30 行判断与理由（约 20 分钟）；运行 `python scripts/apply_spotcheck.py` 后再将人工结果写入报告 §7。
 
 ## C 手动发布步骤

@@ -24,4 +24,4 @@ python run.py
 powershell -ExecutionPolicy Bypass -File scripts/check_all.ps1 -SkipBuild
 ```
 
-看板：仓库内 `dashboards/preview.html` 和 `docs-site/index.html` 可直接查看。八页 `.pbix` 的 PDF 与截图尚未导出。`.pbix` 被 `.gitignore` 排除；仅在确认许可与词级内容后，通过 GitHub Release 附件或个人网盘提供下载地址。
+看板：仓库内 `dashboards/preview.html`、`dashboards/看板.pdf`、`dashboards/images/page01..08.png` 和 `docs-site/index.html` 可直接查看。PDF 与截图来自八页 `.pbix`。`.pbix` 被 `.gitignore` 排除；仅在确认许可与词级内容后，通过 GitHub Release 附件或个人网盘提供下载地址。
