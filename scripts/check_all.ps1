@@ -6,7 +6,7 @@
   - python run.py                        rebuild the DuckDB file and all aggregates
   - export_parquet / verify_engines      three-way reconciliation (DuckDB / Parquet / Python)
   - position_sensitivity                 length x position baseline check
-  - build_review                        100-row query x product review table
+  - build_review / make_spotcheck       100-row automatic pre-screen and blank 30-row spot-check
   - make_charts / build_dashboard_preview   README charts and static dashboard
   - build_dashboard_data / build_review_workbook   Excel exports (need openpyxl)
 
@@ -38,11 +38,12 @@ Invoke-Step "position sensitivity" { & $python scripts/position_sensitivity.py }
 Invoke-Step "review table" { & $python scripts/build_review.py }
 Invoke-Step "README charts" { & $python scripts/make_charts.py }
 Invoke-Step "dashboard preview" { & $python scripts/build_dashboard_preview.py }
+Invoke-Step "verify report figures" { & $python scripts/verify_docs.py }
 
 & $python -c "import openpyxl" 2>$null
 if ($LASTEXITCODE -eq 0) {
     Invoke-Step "dashboard workbook" { & $python scripts/build_dashboard_data.py }
-    Invoke-Step "review workbook" { & $python scripts/build_review_workbook.py }
+    Invoke-Step "blank 30-row spot-check" { & $python scripts/make_spotcheck.py }
 } else {
     Write-Host "openpyxl not found: skipping the two Excel exports" -ForegroundColor Yellow
 }

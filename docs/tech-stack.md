@@ -9,9 +9,9 @@
 | Python | 3.13 | 下载校验、管道编排、统计与导出 | ✅ 已运行 |
 | DuckDB | 2.0.0 | 单机列存分析库，17.8M 曝光聚合 | ✅ 已运行 |
 | SQL | DuckDB 方言 | staging / intermediate / marts 三层 | ✅ 已运行 |
-| Power BI Desktop | 最新 | 展示层（5 页看板） | ⏳ 待制作（本仓库已给出导入数据与搭建手册） |
+| Power BI Desktop | 2.159.1231.0 | 展示层（八页本机报告） | ✅ `.pbix` 已创建并保存；仍可继续美化 |
 | ClickHouse | — | 服务层复算与耗时对比 | ⛔ 未安装（本机无 Docker/WSL2） |
-| Spark | — | 未使用 | ⛔ 不做 |
+| Spark | 4.3.0 | 本地模式复算与 DuckDB 对账 | ✅ 已运行 |
 
 ## 2. 为什么主引擎是 DuckDB
 

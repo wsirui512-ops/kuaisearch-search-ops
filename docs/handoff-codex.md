@@ -132,7 +132,7 @@ Git：8 个 commit，63 个受版本控制文件。`.gitignore` 排除 `data/raw
 | --- | --- | --- | --- |
 | 1 | **报告数字是硬编码**，改口径后容易与 CSV 漂移 | 用脚本从 `outputs_public/` 生成报告里的表格与关键数字（模板占位），或加 `scripts/verify_docs.py` 断言文档数字与 CSV 一致 | CI 里能拦住"数字对不上" |
 | 2 | **需求标签未人工校核**，`无品类信号` 占 36.8% | 抽 200 条标注（`outputs/intent_review_sample.csv` 已有模板），记录准确率，规则版本化 | 报告写明准确率与抽样方法 |
-| 3 | **商品级审阅未完成**（P3） | 填 `outputs/review_workbook.xlsx` 的 100 行（1/0.5/0），回读后写进报告 §7 | 每个 Top 词有 3 条商品证据 |
+| 3 | **商品级抽检未完成**（P3） | 填 `outputs/spotcheck_30.xlsx` 的 30 行（1/0.5/0）及理由，再运行 `scripts/apply_spotcheck.py` | 每个 Top 词有 3 条商品证据 |
 | 4 | **显著性偏乐观**：期望率当固定值 | 改成按条数分层的 CMH 检验，或 bootstrap 置信区间 | 报告给出方法说明 |
 | 5 | **`.pbix` 缺失** | 在用户机器用 `dashboards/data/*.xlsx` 搭 5 页；仓库放 PDF + 截图 + Release 链接 | 看板可过滤且显示样本量 |
 
