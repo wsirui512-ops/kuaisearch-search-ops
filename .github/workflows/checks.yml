@@ -20,6 +20,9 @@ jobs:
       - name: Byte-compile sources
         run: python -m compileall -q src scripts
 
+      - name: Verify headline figures against public aggregates
+        run: python scripts/verify_docs.py
+
       - name: Regenerate README charts
         run: python scripts/make_charts.py
 

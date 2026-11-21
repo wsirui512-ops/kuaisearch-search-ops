@@ -17,4 +17,6 @@ __pycache__/
 !.env.example
 *.log
 *.pbix
+*.duckdb
+*.parquet
 
