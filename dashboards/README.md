@@ -1,29 +1,11 @@
-# 看板目录
+# 看板交付
 
-Power BI 看板按 [docs/powerbi.md](../docs/powerbi.md) 搭建。当前已交付：
-
-| 文件 | 说明 |
+| 文件 | 用途 |
 | --- | --- |
-| `preview.html` | **静态看板预览**：双击即可打开，5 页 + 相对时间附录，样式即 Power BI 的目标版式 |
-| `data/kuaisearch_dashboard.xlsx` | **Power BI 单文件数据源**：12 个 sheet（说明 + 11 张表），一次连接全部导入 |
-| `README.md` | 本文件 |
+| `kuaisearch-search-ops.pbix` | 本机 Power BI Desktop 八页报告：总览、条数效率、品类残差、需求标签、机会清单、标题审阅、相对时间、运营动作 |
+| `preview.html` | 可直接打开的静态业务预览，版式与 Power BI 报告分别维护 |
+| `data/kuaisearch_dashboard.xlsx` | 生成 `.pbix` 所用的工作簿，报告导入了其中 11 张数据表 |
 
-生成命令：
+`.pbix` 已在 Power BI Desktop 创建并保存，含聚合表及 Top 30 搜索词。文件被 `.gitignore` 排除，仅供本机审阅；确认数据再分发范围前，不上传 GitHub Release。八页 PDF 与截图尚待在安装 Power BI Desktop 的电脑导出。项目边界见 [面试展示版](../docs/interview-release-v1.md)，搭建方法见 [Power BI 手册](../docs/powerbi.md)。
 
-```powershell
-python scripts/build_dashboard_data.py     # 重新生成 xlsx（需要 openpyxl）
-python scripts/build_dashboard_preview.py  # 重新生成 preview.html（零依赖）
-```
-
-## 完成 Power BI 后的目录约定
-
-```
-dashboards/
-├── 看板.pdf            # 5 页导出的 PDF
-├── images/             # 每页 PNG 截图（1600×900）
-├── data/kuaisearch_dashboard.xlsx
-├── preview.html
-└── README.md
-```
-
-`.pbix` 工程文件体积大且 GitHub 无法预览，上传到仓库的 Release，并在根 README 添加下载链接。
+若重新生成 `data/kuaisearch_dashboard.xlsx`，在 Power BI Desktop 内刷新并逐页核对指标；当前 `.pbix` 是截至 2026-11-21 的已保存快照。

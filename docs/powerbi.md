@@ -1,7 +1,7 @@
-﻿# Power BI 看板搭建手册（Power BI Desktop，免费）
+﻿# Power BI 看板搭建与交付说明
 
-> 目标：用 `outputs_public/` 里的聚合结果做出 5 页看板，导出 PDF + PNG 放进仓库；`.pbix` 体积大且 GitHub 不能预览，放在 GitHub Release。
-> 数据只有聚合指标，不含用户级记录。
+> 当前本机已生成 `dashboards/kuaisearch-search-ops.pbix`：八页、11 张导入表，Power BI Desktop 实际保存。新增相对时间趋势与运营动作页；下文部分 DAX 与五页版式是后续优化方案，不能当作已完成内容。
+> `.pbix` 含 Top 30 搜索词，不含用户级明细；暂只在本机供审阅，不上传 GitHub Release。
 
 ## 1. 安装与准备
 
@@ -13,9 +13,24 @@
 
 ### 2.1 最快路径：用现成的工作簿
 
-仓库已生成 **`dashboards/data/kuaisearch_dashboard.xlsx`**（12 个 sheet：说明 + 11 张表，列类型与百分比格式已设好）。
+仓库已生成 **`dashboards/data/kuaisearch_dashboard.xlsx`**（13 个 sheet：说明 + 12 张表，列类型与百分比格式已设好）。
 
-`主页 → 获取数据 → Excel 工作簿 → 选中全部 sheet → 加载`。一次连接拿到所有表，省去 11 次导入。
+`主页 → 获取数据 → Excel 工作簿`，选择除「说明」外的 12 张数据表，点击「转换数据」。在 Power Query 中按下表重命名，然后「关闭并应用」。这样下面的 DAX 可直接复制。
+
+| 工作簿 sheet | Power BI 表名 |
+| --- | --- |
+| 总览 | `overview` |
+| 条数分层 | `length_strata` |
+| 条数基准 | `stratum_baseline` |
+| 类目 | `category_metrics` |
+| 类目残差 | `category_residuals` |
+| 需求标签 | `intent_metrics` |
+| 需求残差 | `intent_residuals` |
+| 机会清单 | `opportunities_top30` |
+| 相对时间 | `relative_time_metrics` |
+| 年龄 | `age_metrics` |
+| 相关性覆盖 | `relevance_coverage` |
+| 标题预筛 | `review_coverage_summary`（仅自动二字覆盖率） |
 
 ### 2.2 或者逐表导入 CSV
 
@@ -46,11 +61,17 @@
 
 最简可用模型（不需要星型建模训练）：
 
-- `overview`、`length_strata`、`intent_metrics`、`relative_time_metrics`、`category_metrics`、`opportunities_top30` 之间**只通过 `split` 建立关系**（多对一，单选）。
-- `category_metrics` 与 `category_residuals` 通过 `category_id` 关联（`category_residuals` 只有 train）。
+- 建一张仅含 `train`、`test` 两行的 `dim_split`，由 `dim_split[split]` 分别一对多连接 `overview`、`length_strata`、`category_metrics`、`intent_metrics`、`relative_time_metrics`；**不要把多张聚合表直接用重复的 `split` 值互连**。
+- `category_residuals` 与 `intent_residuals` 仅含训练段数据，单独使用，不接 `split` 切片器。两个残差页在标题上明确写「训练段」。
 - `opportunities_top30` 不做关系，单独一页用（避免筛选器互相干扰）。
 
 > 关系只用于同步筛选 `split`；所有比例都必须用 DAX 重新计算，不能直接对百分比列求平均。
+
+`建模 → 新建表` 创建切片维度：
+
+```DAX
+dim_split = DATATABLE("split", STRING, {{"train"}, {"test"}})
+```
 
 ## 4. 度量值（复制到"建模 → 新建度量值"）
 
@@ -61,16 +82,15 @@
 请求点击率 = DIVIDE(SUM(overview[clicked_requests]), SUM(overview[requests]))
 购买请求率 = DIVIDE(SUM(overview[purchased_requests]), SUM(overview[requests]))
 平均展示条数 = DIVIDE([曝光数], SUM(overview[requests]))
+去重用户（单段） = IF(HASONEVALUE(dim_split[split]), SUM(overview[users]), BLANK())
 
 -- 条数分层页：按层重算，禁止直接平均
 分层商品点击率 = DIVIDE(SUM(length_strata[clicks]), SUM(length_strata[exposures]))
-分层请求点击率 = DIVIDE(
-    SUMX(length_strata, length_strata[request_click_rate] * length_strata[requests]),
-    SUM(length_strata[requests])
-)
+-- 单一条数段可直接展示 length_strata[request_click_rate]；
+-- 该表没有 clicked_requests，跨条数段聚合不应伪装成精确重算。
 
 -- 机会页
-同条数期望点击 = SUM(opportunities_top30[expected_ctr] * opportunities_top30[exposures])
+同条数期望点击 = SUMX(opportunities_top30, opportunities_top30[expected_ctr] * opportunities_top30[exposures])
 缺口点击 = SUM(opportunities_top30[gap_clicks])
 缺口百分点 = DIVIDE([同条数期望点击] - SUM(opportunities_top30[clicks]), SUM(opportunities_top30[exposures])) * 100
 ```
@@ -78,15 +98,15 @@
 ## 5. 五个页面
 
 ### 页 1｜总览
-- 卡片：请求数、去重用户、曝光、点击、商品点击率、请求点击率（分 train/test 两张表或一个切片器）
-- 一句话结论文本框："7% 的请求贡献 40% 的曝光，长列表拉低单件点击率"
+- 卡片：请求数、曝光、点击、商品点击率、请求点击率（分 train/test 两张表或一个切片器）。`users` 在两段之间可能重复，不能把两段人数相加当去重用户数。
+- 一句话结论文本框："约 7% 的请求贡献约 40% 的曝光；列表条数与商品点击率密切相关"
 - 切片器：`split`
 
 ### 页 2｜条数效率（核心）
 - 柱状图：`length_stratum` × 商品点击率（排序按条数段）
-- 折线/柱：`length_stratum` × 请求点击率
+- 折线/柱：`length_stratum` × 原表 `request_click_rate`（每一条数段恰好一行；不要跨层求平均）
 - 表格：请求数、曝光数、两种点击率（提示"曝光集中度"）
-- 一句话："同一批用户，1–10 条时 8.96%，100+ 条时 2.19%"
+- 一句话："不同条数段的样本商品点击率为 8.96% 与 2.19%；这不是同一批用户的对照实验"
 
 ### 页 3｜类目效率
 - 横条：类目曝光量（Top 15）+ 商品点击率标签
@@ -97,7 +117,7 @@
 ### 页 4｜需求结构
 - 柱状图：`intent` × 请求占比
 - 表格：`intent_residuals`（实际/期望/差距）
-- 一句话："按同条数校准后，需求标签之间几乎没有效率差异"
+- 一句话："按同条数校准后，规则标签之间的描述性差距缩小；标签尚未人工校核"
 
 ### 页 5｜机会清单
 - 表格：`opportunities_top30` 的 rank、query、请求、曝光、实际/期望 CTR、gap_pp、缺口点击、请求点击率、validation
@@ -130,7 +150,7 @@
 
 1. `文件 → 导出 → 导出为 PDF`，命名 `dashboards/看板.pdf`。
 2. 每页 `视图 → 截图` 或 Windows 截图，存 `dashboards/images/page1.png` …（建议 1600×900）。
-3. `文件 → 另存为` 得到 `.pbix`，**不要提交到 git**（`.gitignore` 已排除），上传到 GitHub Release，README 里给下载链接。
+3. 本机 `.pbix` 已保存到 `dashboards/kuaisearch-search-ops.pbix`。该文件含 Top 30 搜索词，**不要提交到 git 或上传 GitHub Release**；公开版本需先确认数据许可并审阅或脱敏词级内容。
 4. 在 README 里嵌 2–3 张关键页截图（不要贴 6 张）。
 
 ## 7. 常见坑
@@ -146,7 +166,7 @@
 
 ## 8. 验收清单
 
-- [ ] 5 页能按 `split` 过滤，且每页有样本量
+- [ ] 总览、条数和原始结构图能按 `split` 过滤；训练段残差页明确标注训练段；每页有样本量
 - [ ] 所有比率用 DAX 重算，未对百分比列求平均
 - [ ] 有 PDF + 至少 3 张 PNG 入库
 - [ ] `.pbix` 在 Release，不在仓库
