@@ -147,6 +147,7 @@ Power BI 5 页：总览 / 条数效率 / 类目效率 / 需求结构 / 机会清
 | [技术栈](docs/tech-stack.md) | DuckDB 取舍、ClickHouse 对账资产、Spark 实测与选型建议 |
 | [面试材料](docs/interview.md) | 30 秒/2 分钟讲法、10 个追问、简历表述 |
 | [路线图](docs/roadmap.md) | 阶段计划、当前进度与验收标准 |
+| [交接说明](docs/handoff-codex.md) | 给优化方的完整交接：结论、口径、文件地图、已知弱点与优化任务 |
 
 ## 许可
 
