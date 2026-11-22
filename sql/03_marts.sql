@@ -48,6 +48,16 @@ FROM sessions
 WHERE split = 'train'
 GROUP BY length_stratum;
 
+CREATE TABLE stratum_baseline_test AS
+SELECT
+  length_stratum,
+  sum(impressions) AS exposures,
+  sum(clicks) AS clicks,
+  sum(clicks)::DOUBLE / nullif(sum(impressions), 0) AS item_ctr
+FROM sessions
+WHERE split = 'test'
+GROUP BY length_stratum;
+
 CREATE TABLE category_metrics AS
 SELECT
   f.split,
@@ -127,6 +137,26 @@ FROM query_strata AS qs
 JOIN stratum_baseline AS b USING (length_stratum)
 GROUP BY qs.query_key;
 
+CREATE TABLE query_strata_test AS
+SELECT
+  d.query_key,
+  s.length_stratum,
+  sum(s.impressions) AS exposures,
+  sum(s.clicks) AS clicks
+FROM sessions AS s
+JOIN query_dictionary AS d USING (query)
+WHERE s.split = 'test'
+GROUP BY d.query_key, s.length_stratum;
+
+CREATE TABLE query_expected_test AS
+SELECT
+  qs.query_key,
+  sum(qs.exposures * b.item_ctr) AS expected_clicks,
+  sum(qs.exposures) AS exposures
+FROM query_strata_test AS qs
+JOIN stratum_baseline_test AS b USING (length_stratum)
+GROUP BY qs.query_key;
+
 CREATE VIEW opportunities_base AS
 SELECT
   m.query_key,
@@ -146,11 +176,13 @@ SELECT
   t.exposures AS test_exposures,
   t.requests AS test_requests,
   t.item_ctr AS test_item_ctr,
-  t.request_click_rate AS test_request_click_rate
+  t.request_click_rate AS test_request_click_rate,
+  te.expected_clicks / te.exposures AS test_expected_ctr
 FROM query_metrics AS m
 JOIN query_expected AS e USING (query_key)
 LEFT JOIN query_metrics AS t
   ON t.query_key = m.query_key AND t.split = 'test'
+LEFT JOIN query_expected_test AS te USING (query_key)
 WHERE m.split = 'train'
   AND m.requests >= 100
   AND m.users >= 30

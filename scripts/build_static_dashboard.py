@@ -118,6 +118,27 @@ def bar_chart(slide, left, top, width, height, categories, values, title, colors
     return chart
 
 
+def hbar_chart(slide, left, top, width, height, categories, values, title, color=BLUE, number_format='0.00'):
+    data = CategoryChartData()
+    data.categories = categories
+    data.add_series(title, values)
+    chart = slide.shapes.add_chart(XL_CHART_TYPE.BAR_CLUSTERED, left, top, width, height, data).chart
+    chart.has_legend = False
+    chart.font.name = FONT
+    chart.font.size = Pt(10)
+    plot = chart.plots[0]
+    plot.has_data_labels = True
+    plot.data_labels.number_format = number_format
+    plot.data_labels.number_format_is_linked = False
+    plot.data_labels.font.size = Pt(9)
+    plot.data_labels.position = XL_LABEL_POSITION.OUTSIDE_END
+    plot.series[0].format.fill.solid()
+    plot.series[0].format.fill.fore_color.rgb = color
+    chart.category_axis.tick_labels.font.size = Pt(9)
+    chart.value_axis.tick_labels.font.size = Pt(9)
+    return chart
+
+
 def main() -> None:
     overview = {row["split"]: row for row in read("overview.csv")}
     strata = [row for row in read("length_strata.csv") if row["split"] == "train"]
@@ -165,6 +186,17 @@ def main() -> None:
         ["购买请求率", f"{float(train['request_purchase_rate'])*100:.2f}%", f"{float(test['request_purchase_rate'])*100:.2f}%"],
         ["平均展示条数", f"{float(train['avg_list_length']):.1f}", f"{float(test['avg_list_length']):.1f}"],
     ], [Inches(1.9), Inches(1.9), Inches(1.9)])
+    closing = [
+        ("结构", "6.9% 的请求贡献 40.3% 曝光"),
+        ("口径", "按条数校准后女装 0.78pp → 0.25pp"),
+        ("清单", "124 个待核查词，Top 30 差 6,416 次点击"),
+    ]
+    for index, (label, text) in enumerate(closing):
+        left = Inches(0.55 + index * 4.1)
+        card = slide.shapes.add_shape(1, left, Inches(5.55), Inches(3.95), Inches(0.95))
+        card.fill.solid(); card.fill.fore_color.rgb = LIGHT; card.line.color.rgb = RGBColor(0xE3, 0xE6, 0xEC)
+        text_box(slide, left + Inches(0.18), Inches(5.62), Inches(0.9), Inches(0.35), label, size=11, bold=True, color=BLUE)
+        text_box(slide, left + Inches(1.05), Inches(5.62), Inches(2.75), Inches(0.8), text, size=10.5)
     text_box(slide, Inches(6.55), Inches(3.0), Inches(6.2), Inches(2.6),
              f"一句话：{long_share*100:.1f}% 的曝光来自「一次展示 100 条以上」的请求，"
              f"这类请求的商品点击率只有 {float(strata[-1]['item_ctr'])*100:.2f}%，"
@@ -173,7 +205,7 @@ def main() -> None:
 
     # 2 条数效率
     slide = prs.slides.add_slide(blank)
-    page(slide, 2, "02 条数效率：列表越长，单件越难被点", "训练段；同一批用户在不同列表长度下的表现。两种点击率放在同一张图上时看的是形状，不是数值高低。")
+    page(slide, 2, "02 条数效率：列表越长，单件越难被点", "训练段；不同请求的展示条数不同。两种点击率放在同一张图上时看的是形状，不是数值高低。")
     bar_chart(slide, Inches(0.55), Inches(1.4), Inches(6.3), Inches(4.2),
               [r["length_stratum"] for r in strata],
               [round(float(r["item_ctr"]) * 100, 3) for r in strata],
@@ -191,16 +223,16 @@ def main() -> None:
     slide = prs.slides.add_slide(blank)
     page(slide, 3, "03 品类残差：按同条数基准校准后的缺口", "训练段；期望点击 = Σ(各条数段曝光 × 该段基准 CTR)。差额是描述性的，不是可回收点击。")
     top_categories = categories[:10]
-    bar_chart(slide, Inches(0.55), Inches(1.4), Inches(7.2), Inches(4.6),
-              [c["category"][:6] for c in top_categories],
-              [round(float(c["gap_pp"]), 3) for c in top_categories],
-              "缺口（百分点）", ORANGE, '0.00')
+    hbar_chart(slide, Inches(0.55), Inches(1.4), Inches(7.2), Inches(4.6),
+               [c["category"] for c in reversed(top_categories)],
+               [round(float(c["gap_pp"]), 3) for c in reversed(top_categories)],
+               "缺口（百分点）", ORANGE, '0.00')
     table(slide, Inches(8.0), Inches(1.5), Inches(4.8), [
         ["类目", "曝光", "实际", "期望"],
         *[[c["category"][:5], f"{int(c['exposures']):,}",
            f"{float(c['item_ctr'])*100:.2f}%", f"{float(c['expected_ctr'])*100:.2f}%"]
           for c in top_categories[:6]],
-    ], [Inches(1.5), Inches(1.2), Inches(1.0), Inches(1.1)], body_size=9)
+    ], [Inches(1.85), Inches(1.15), Inches(0.95), Inches(0.95)], body_size=8.5)
     text_box(slide, Inches(0.55), Inches(6.15), Inches(12.2), Inches(0.7),
              "读法：女装缺口总量最大（曝光体量大），但每曝光只差 0.25pp；男鞋每曝光差 0.73pp，更值得先查。",
              size=11.5, color=GREY)

@@ -26,4 +26,4 @@
 3. 在仓库 Settings → Pages → Build and deployment 选择 Deploy from a branch / `docs`；
    访问 `https://<用户名>.github.io/<仓库名>/`，核对图表与词级内容。
 4. 创建 v1.0 Release，复制 `docs/release-notes-v1.md`；许可已核实（MIT），可附 PDF 与看板源文件。
-5. 添加 topics，例如 `search-analytics`、`data-operations`、`duckdb`、`power-bi`。
+5. 添加 topics，例如 `search-analytics`、`data-operations`、`duckdb`、`static-dashboard`。

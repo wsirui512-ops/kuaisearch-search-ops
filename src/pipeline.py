@@ -139,6 +139,7 @@ OPPORTUNITY_COLUMNS = [
     "test_requests",
     "test_item_ctr",
     "test_request_click_rate",
+    "test_expected_ctr",
     "validation",
 ]
 
@@ -211,9 +212,11 @@ def _build_opportunities(conn: duckdb.DuckDBPyConnection) -> list[tuple]:
         row = candidate["row"]
         test_exposures = row[index["test_exposures"]]
         test_item_ctr = row[index["test_item_ctr"]]
+        test_expected_ctr = row[index["test_expected_ctr"]]
+        reference = test_expected_ctr if test_expected_ctr else test_baseline
         if test_exposures is None or test_exposures < 100:
             validation = "验证样本不足"
-        elif test_item_ctr < test_baseline:
+        elif test_item_ctr < reference:
             validation = "后段方向一致"
         else:
             validation = "后段方向未复现"
@@ -242,6 +245,7 @@ def _build_opportunities(conn: duckdb.DuckDBPyConnection) -> list[tuple]:
                 row[index["test_requests"]],
                 test_item_ctr,
                 row[index["test_request_click_rate"]],
+                test_expected_ctr,
                 validation,
             )
         )

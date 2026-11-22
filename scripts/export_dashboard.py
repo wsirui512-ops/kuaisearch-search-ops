@@ -15,6 +15,7 @@ import sys
 from pathlib import Path
 
 from PIL import Image
+import PIL.JpegImagePlugin  # registers the JPEG encoder used by Pillow's PDF writer (noqa: F401)
 
 ROOT = Path(__file__).resolve().parents[1]
 DEPS = ROOT / ".localdeps"
@@ -77,7 +78,12 @@ def main() -> None:
                 raise SystemExit(f"{target.name}: unexpected size {image.size}")
         print(f"slide {index} -> {target.relative_to(ROOT)}")
 
-    export_pdf()
+    try:
+        export_pdf()
+    except Exception as error:  # PowerPoint occasionally fails on SaveAs; assemble from PNGs
+        print(f"PowerPoint PDF export failed ({error}); building PDF from PNGs")
+        pages = [Image.open(IMAGES / f"page{index:02d}.png").convert("RGB") for index in range(1, 9)]
+        pages[0].save(PDF, save_all=True, append_images=pages[1:], resolution=150.0)
     print(f"PDF: {PDF.relative_to(ROOT)} ({PDF.stat().st_size / 1e6:.2f} MB)")
 
 

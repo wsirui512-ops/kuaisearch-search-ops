@@ -15,6 +15,11 @@ ROOT = Path(__file__).resolve().parents[1]
 PUBLIC = ROOT / "outputs_public"
 TARGET = ROOT / "dashboards" / "preview.html"
 
+MASK = {
+    "鞋子女潮流ins百搭学生党": "长尾泛词 A",
+    "裤子女款爆款2025新款春秋款": "长尾泛词 B",
+}
+
 BLUE = "#2f6fdd"
 ORANGE = "#e8590c"
 GREY = "#6b7280"
@@ -115,6 +120,7 @@ def main() -> None:
     intents = [row for row in read("intent_metrics.csv") if row["split"] == "train"]
     intent_res = read("intent_residuals.csv")
     opportunities = read("opportunities_top30.csv")
+    coverage = read("review_coverage_summary.csv")
     relative = [row for row in read("relative_time_metrics.csv") if row["split"] == "train"]
 
     train = overview["train"]
@@ -218,7 +224,7 @@ def main() -> None:
     page4 = f"""
     <section id="page4" class="page">
       <h2>4 · 需求结构</h2>
-      <p class="lede">规则标签只用于结构描述：按同条数校准后，各标签的效率差异都在 ±0.2pp 内，品牌/店铺词甚至略好于期望。</p>
+      <p class="lede">规则标签只用于结构描述：按同条数校准后，各标签的效率差异都在 ±0.34pp 内，品牌/店铺词甚至略好于期望。</p>
       <div class="split">
         <div class="card">
           <h3>请求占比（训练段）</h3>
@@ -254,6 +260,53 @@ def main() -> None:
             classes={6: "num", 7: "num"},
         )}
       </div>
+    </section>
+    """
+
+    coverage_rows = "".join(
+        f'<tr><td>{html.escape(MASK.get(r["query"], r["query"]))}</td><td>{r["items_reviewed"]}</td>'
+        f'<td>{float(r["avg_bigram_coverage"]):.2f}</td>'
+        f'<td>{float(r["pct_items_zero_coverage"]) * 100:.0f}%</td></tr>'
+        for r in coverage
+    )
+    page6 = f"""
+    <section id="page6" class="page">
+      <h2>6 · 标题预筛（自动，未人工抽检）</h2>
+      <p class="lede">每个词取曝光最高的 10 件商品，计算 query 的二字片段出现在标题中的比例。覆盖率低不等于不相关。</p>
+      <div class="split">
+        <div class="card">
+          <h3>10 个词的覆盖率</h3>
+          <table><thead><tr><th>搜索词</th><th>商品数</th><th>平均覆盖率</th><th>零覆盖占比</th></tr></thead>
+          <tbody>{coverage_rows}</tbody></table>
+        </div>
+        <div class="card">
+          <h3>怎么读</h3>
+          <p class="note">「衣服」「鞋子」覆盖率低，是因为标题写的是卫衣、板鞋、面包鞋；「外套」「裤子」「手机壳」覆盖 100%，词本身就出现在标题里。</p>
+          <p class="note">这张表只用于筛出值得人工看的样本，不能得出「X% 商品不相关」。30 条人工抽检结果（26/4/0）单独记录。</p>
+        </div>
+      </div>
+    </section>
+    """
+
+    actions = [
+        ("A 结果分区", "同批商品按细类目分组展示，不减少商品数", "请求点击率（主）", "搜索运营 + 产品", "每臂约 4,300 请求"),
+        ("B 细意图入口", "泛词顶部提供细分入口（女鞋/男鞋/运动鞋）", "入口点击率、分支页面 CTR", "搜索运营", "每臂约 4,300 请求"),
+        ("C 属性补全", "补充机型/材质/季节/版型等标题属性", "目标商品点击率", "商家运营", "每臂约 15 万曝光"),
+    ]
+    action_rows = "".join(
+        f"<tr><td><b>{html.escape(name)}</b></td><td>{html.escape(what)}</td>"
+        f"<td>{html.escape(metric)}</td><td>{html.escape(owner)}</td><td>{html.escape(size)}</td></tr>"
+        for name, what, metric, owner, size in actions
+    )
+    page7 = f"""
+    <section id="page7" class="page">
+      <h2>7 · 运营动作</h2>
+      <p class="lede">没有线上实验，以下为方案；主指标优先用请求点击率，商品点击率为辅助诊断。</p>
+      <div class="card wide">
+        <table><thead><tr><th>动作</th><th>做什么</th><th>主指标</th><th>负责</th><th>最小样本</th></tr></thead>
+        <tbody>{action_rows}</tbody></table>
+      </div>
+      <p class="note">判读：主指标提升且护栏不下降才算成功；没有真实实验前不报告任何提升比例。</p>
     </section>
     """
 
@@ -321,6 +374,7 @@ def main() -> None:
 <nav>
   <a href="#page1">总览</a><a href="#page2">条数效率</a><a href="#page3">类目效率</a>
   <a href="#page4">需求结构</a><a href="#page5">机会清单</a>
+  <a href="#page6">标题预筛</a><a href="#page7">运营动作</a><a href="#page8">相对时间</a>
 </nav>
 <main>
 {page1}
@@ -328,8 +382,10 @@ def main() -> None:
 {page3}
 {page4}
 {page5}
-<section class="page">
-  <h2>附 · 相对时间（不可还原为日期）</h2>
+{page6}
+{page7}
+<section class="page" id="page8">
+  <h2>8 · 相对时间（不可还原为日期）</h2>
   <p class="lede">20 个等宽区间，只用于看量级波动，不能当作星期/小时趋势。</p>
   <div class="card wide">
     <table><thead><tr><th>相对区间</th><th>请求数</th><th>商品点击率</th><th>请求点击率</th></tr></thead>
