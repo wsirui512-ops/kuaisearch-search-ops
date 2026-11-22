@@ -1,4 +1,4 @@
-# 快手电商搜索需求与转化效率诊断
+﻿# 快手电商搜索需求与转化效率诊断
 
 用 KuaiSearch-Lite 的真实搜索行为，回答一个运营问题：**哪些搜索需求有曝光、有需求，却没被结果页接住？**
 
@@ -107,6 +107,7 @@ python scripts/position_sensitivity.py    # 位置敏感性复核（条数 × �
 python scripts/export_parquet.py   # 导出 Parquet（ClickHouse 对账或免重建查询用）
 python scripts/build_dashboard_data.py    # Power BI 单文件数据源（需要 openpyxl）
 python scripts/build_dashboard_preview.py # 静态看板预览
+python scripts/normalize_screenshots.py    # 截图统一裁切为 1600×900
 python scripts/check_dashboard_assets.py   # 校验 PDF/截图（发布前必跑）
 python scripts/make_charts.py      # 重新生成 README 图表
 ```
