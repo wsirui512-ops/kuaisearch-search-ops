@@ -1,0 +1,156 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>快手电商搜索需求与转化效率诊断 · 看板预览</title>
+<style>
+  :root { --blue:#2f6fdd; --orange:#e8590c; --grey:#6b7280; --grid:#e5e7eb; }
+  * { box-sizing: border-box; }
+  body { margin:0; font-family:'Segoe UI', 'Microsoft YaHei', 'PingFang SC', sans-serif; color:#111827; background:#f6f7f9; }
+  header { padding:22px 28px 10px; }
+  header h1 { margin:0 0 6px; font-size:22px; }
+  header p { margin:0; color:var(--grey); font-size:13px; }
+  nav { display:flex; gap:8px; padding:14px 28px; flex-wrap:wrap; }
+  nav a { text-decoration:none; font-size:13px; padding:7px 14px; border-radius:999px; background:#fff;
+           border:1px solid #d9dde5; color:#374151; }
+  nav a:hover { border-color:var(--blue); color:var(--blue); }
+  main { padding:0 28px 40px; }
+  .page { background:#fff; border:1px solid #e3e6ec; border-radius:12px; padding:20px 22px; margin-bottom:18px; }
+  .page h2 { margin:0 0 6px; font-size:17px; }
+  .lede { margin:0 0 14px; color:var(--grey); font-size:13px; }
+  .kpis { display:grid; grid-template-columns:repeat(6, 1fr); gap:10px; margin-bottom:16px; }
+  .kpi { border:1px solid #e3e6ec; border-radius:10px; padding:10px 12px; background:#fbfcfe; }
+  .kpi-label { font-size:11px; color:var(--grey); }
+  .kpi-value { font-size:19px; font-weight:600; margin:2px 0; }
+  .kpi-note { font-size:10px; color:#9ca3af; }
+  .split { display:grid; grid-template-columns:1fr 1fr; gap:14px; }
+  .card { border:1px solid #eceff3; border-radius:10px; padding:12px 14px; }
+  .card.wide { margin-top:14px; }
+  .card h3 { margin:0 0 8px; font-size:13px; color:#374151; font-weight:600; }
+  .card .note { margin:6px 0 0; font-size:11px; color:#9ca3af; }
+  table { width:100%; border-collapse:collapse; font-size:12px; }
+  th, td { text-align:left; padding:6px 8px; border-bottom:1px solid #f0f2f5; }
+  th { background:#f8fafc; color:#4b5563; font-weight:600; }
+  td.num, th.num { text-align:right; }
+  .chip { display:inline-block; padding:1px 7px; border-radius:999px; background:#fdece3; color:#b4450f; font-size:11px; }
+  .scroll { max-height:460px; overflow:auto; }
+  footer { padding:0 28px 30px; color:#9ca3af; font-size:11px; }
+  @media print {
+    body { background:#fff; }
+    nav { display:none; }
+    main { padding:0; }
+    header { padding:12px 0 6px; }
+    .page { border:none; box-shadow:none; padding:0 0 10px; margin:0; }
+    .page + .page { break-before: page; page-break-before: always; }
+    .card, .kpi, table { break-inside: avoid; page-break-inside: avoid; }
+    footer { padding:0; }
+  }
+</style>
+</head>
+<body>
+<header>
+  <h1>快手电商搜索需求与转化效率诊断</h1>
+  <p>555,553 次搜索 · 17,800,904 次曝光 · 102,086 名用户｜静态预览版（由 outputs_public 渲染）</p>
+</header>
+<nav>
+  <a href="#page1">总览</a><a href="#page2">条数效率</a><a href="#page3">类目效率</a>
+  <a href="#page4">需求结构</a><a href="#page5">机会清单</a>
+</nav>
+<main>
+
+    <section id="page1" class="page">
+      <h2>1 · 总览</h2>
+      <p class="lede">曝光高度集中在长列表：少部分请求贡献了大部分曝光，也拉低了单件点击率。</p>
+      <div class="kpis"><div class="kpi"><div class="kpi-label">搜索请求</div><div class="kpi-value">539,012</div><div class="kpi-note">测试段 16,541</div></div><div class="kpi"><div class="kpi-label">商品曝光</div><div class="kpi-value">17,306,633</div><div class="kpi-note">测试段 494,271</div></div><div class="kpi"><div class="kpi-label">商品点击率</div><div class="kpi-value">3.83%</div><div class="kpi-note">测试段 3.80%</div></div><div class="kpi"><div class="kpi-label">请求点击率</div><div class="kpi-value">53.16%</div><div class="kpi-note">测试段 51.12%</div></div><div class="kpi"><div class="kpi-label">100+ 条曝光占比</div><div class="kpi-value">40.3%</div><div class="kpi-note">仅 6.9% 的请求</div></div><div class="kpi"><div class="kpi-label">机会候选词</div><div class="kpi-value">30</div><div class="kpi-note">Top 30 已导出</div></div></div>
+      <div class="split">
+        <div class="card">
+          <h3>训练段 vs 测试段（时间外）</h3>
+          <table><thead><tr><th>指标</th><th>训练段</th><th>测试段</th></tr></thead><tbody><tr><td>请求数</td><td>539,012</td><td>16,541</td></tr><tr><td>去重用户</td><td>100,182</td><td>6,211</td></tr><tr><td>商品曝光</td><td>17,306,633</td><td>494,271</td></tr><tr><td>商品点击率</td><td>3.83%</td><td>3.80%</td></tr><tr><td>请求点击率</td><td>53.16%</td><td>51.12%</td></tr><tr><td>购买请求率</td><td>8.81%</td><td>8.83%</td></tr><tr><td>平均展示条数</td><td>32.1</td><td>29.9</td></tr></tbody></table>
+        </div>
+        <div class="card">
+          <h3>曝光结构</h3>
+          <svg viewBox="0 0 640 300" width="100%" role="img"><text x="4" y="16" font-size="10" fill="#6b7280">各条数段占总曝光比例</text><line x1="58" y1="246.0" x2="622" y2="246.0" stroke="#e5e7eb"/><text x="50" y="249.0" font-size="10" fill="#6b7280" text-anchor="end">0.0%</text><line x1="58" y1="193.0" x2="622" y2="193.0" stroke="#e5e7eb"/><text x="50" y="196.0" font-size="10" fill="#6b7280" text-anchor="end">11.9%</text><line x1="58" y1="140.0" x2="622" y2="140.0" stroke="#e5e7eb"/><text x="50" y="143.0" font-size="10" fill="#6b7280" text-anchor="end">23.8%</text><line x1="58" y1="87.0" x2="622" y2="87.0" stroke="#e5e7eb"/><text x="50" y="90.0" font-size="10" fill="#6b7280" text-anchor="end">35.7%</text><line x1="58" y1="34.0" x2="622" y2="34.0" stroke="#e5e7eb"/><text x="50" y="37.0" font-size="10" fill="#6b7280" text-anchor="end">47.6%</text><rect x="72.5" y="213.2" width="51.6" height="32.8" fill="#7c9ef0" rx="2"/><text x="98.3" y="207.2" font-size="10" fill="#111827" text-anchor="middle">7.4%</text><text x="98.3" y="262" font-size="10" fill="#6b7280" text-anchor="middle">01-10</text><rect x="153.1" y="210.2" width="51.6" height="35.8" fill="#7c9ef0" rx="2"/><text x="178.9" y="204.2" font-size="10" fill="#111827" text-anchor="middle">8.0%</text><text x="178.9" y="262" font-size="10" fill="#6b7280" text-anchor="middle">11-20</text><rect x="233.6" y="211.0" width="51.6" height="35.0" fill="#7c9ef0" rx="2"/><text x="259.4" y="205.0" font-size="10" fill="#111827" text-anchor="middle">7.9%</text><text x="259.4" y="262" font-size="10" fill="#6b7280" text-anchor="middle">21-30</text><rect x="314.2" y="214.3" width="51.6" height="31.7" fill="#7c9ef0" rx="2"/><text x="340.0" y="208.3" font-size="10" fill="#111827" text-anchor="middle">7.1%</text><text x="340.0" y="262" font-size="10" fill="#6b7280" text-anchor="middle">31-40</text><rect x="394.8" y="192.3" width="51.6" height="53.7" fill="#7c9ef0" rx="2"/><text x="420.6" y="186.3" font-size="10" fill="#111827" text-anchor="middle">12.1%</text><text x="420.6" y="262" font-size="10" fill="#6b7280" text-anchor="middle">41-60</text><rect x="475.4" y="169.4" width="51.6" height="76.6" fill="#7c9ef0" rx="2"/><text x="501.1" y="163.4" font-size="10" fill="#111827" text-anchor="middle">17.2%</text><text x="501.1" y="262" font-size="10" fill="#6b7280" text-anchor="middle">61-100</text><rect x="555.9" y="66.3" width="51.6" height="179.7" fill="#7c9ef0" rx="2"/><text x="581.7" y="60.3" font-size="10" fill="#111827" text-anchor="middle">40.3%</text><text x="581.7" y="262" font-size="10" fill="#6b7280" text-anchor="middle">100+</text></svg>
+          <p class="note">7 个条数段中，100+ 段单独占四成曝光。</p>
+        </div>
+      </div>
+    </section>
+    
+
+    <section id="page2" class="page">
+      <h2>2 · 条数效率（核心）</h2>
+      <p class="lede">同一批用户：展示 1–10 条时单件点击率 8.96%，100+ 条时只有 2.19%；但请求点击率从 36.6% 升到 84.1%。</p>
+      <div class="split">
+        <div class="card">
+          <h3>商品点击率（点击商品 / 曝光商品）</h3>
+          <svg viewBox="0 0 640 300" width="100%" role="img"><text x="4" y="16" font-size="10" fill="#6b7280">训练段</text><line x1="58" y1="246.0" x2="622" y2="246.0" stroke="#e5e7eb"/><text x="50" y="249.0" font-size="10" fill="#6b7280" text-anchor="end">0.0%</text><line x1="58" y1="193.0" x2="622" y2="193.0" stroke="#e5e7eb"/><text x="50" y="196.0" font-size="10" fill="#6b7280" text-anchor="end">2.6%</text><line x1="58" y1="140.0" x2="622" y2="140.0" stroke="#e5e7eb"/><text x="50" y="143.0" font-size="10" fill="#6b7280" text-anchor="end">5.3%</text><line x1="58" y1="87.0" x2="622" y2="87.0" stroke="#e5e7eb"/><text x="50" y="90.0" font-size="10" fill="#6b7280" text-anchor="end">7.9%</text><line x1="58" y1="34.0" x2="622" y2="34.0" stroke="#e5e7eb"/><text x="50" y="37.0" font-size="10" fill="#6b7280" text-anchor="end">10.6%</text><rect x="72.5" y="66.3" width="51.6" height="179.7" fill="#2f6fdd" rx="2"/><text x="98.3" y="60.3" font-size="10" fill="#111827" text-anchor="middle">8.96%</text><text x="98.3" y="262" font-size="10" fill="#6b7280" text-anchor="middle">01-10</text><rect x="153.1" y="106.2" width="51.6" height="139.8" fill="#2f6fdd" rx="2"/><text x="178.9" y="100.2" font-size="10" fill="#111827" text-anchor="middle">6.97%</text><text x="178.9" y="262" font-size="10" fill="#6b7280" text-anchor="middle">11-20</text><rect x="233.6" y="139.3" width="51.6" height="106.7" fill="#2f6fdd" rx="2"/><text x="259.4" y="133.3" font-size="10" fill="#111827" text-anchor="middle">5.32%</text><text x="259.4" y="262" font-size="10" fill="#6b7280" text-anchor="middle">21-30</text><rect x="314.2" y="157.2" width="51.6" height="88.8" fill="#2f6fdd" rx="2"/><text x="340.0" y="151.2" font-size="10" fill="#111827" text-anchor="middle">4.43%</text><text x="340.0" y="262" font-size="10" fill="#6b7280" text-anchor="middle">31-40</text><rect x="394.8" y="170.2" width="51.6" height="75.8" fill="#2f6fdd" rx="2"/><text x="420.6" y="164.2" font-size="10" fill="#111827" text-anchor="middle">3.78%</text><text x="420.6" y="262" font-size="10" fill="#6b7280" text-anchor="middle">41-60</text><rect x="475.4" y="183.7" width="51.6" height="62.3" fill="#2f6fdd" rx="2"/><text x="501.1" y="177.7" font-size="10" fill="#111827" text-anchor="middle">3.11%</text><text x="501.1" y="262" font-size="10" fill="#6b7280" text-anchor="middle">61-100</text><rect x="555.9" y="202.2" width="51.6" height="43.8" fill="#2f6fdd" rx="2"/><text x="581.7" y="196.2" font-size="10" fill="#111827" text-anchor="middle">2.19%</text><text x="581.7" y="262" font-size="10" fill="#6b7280" text-anchor="middle">100+</text></svg>
+        </div>
+        <div class="card">
+          <h3>请求点击率（有点击的请求 / 请求）</h3>
+          <svg viewBox="0 0 640 300" width="100%" role="img"><text x="4" y="16" font-size="10" fill="#6b7280">训练段</text><line x1="58" y1="246.0" x2="622" y2="246.0" stroke="#e5e7eb"/><text x="50" y="249.0" font-size="10" fill="#6b7280" text-anchor="end">0.0%</text><line x1="58" y1="193.0" x2="622" y2="193.0" stroke="#e5e7eb"/><text x="50" y="196.0" font-size="10" fill="#6b7280" text-anchor="end">24.8%</text><line x1="58" y1="140.0" x2="622" y2="140.0" stroke="#e5e7eb"/><text x="50" y="143.0" font-size="10" fill="#6b7280" text-anchor="end">49.6%</text><line x1="58" y1="87.0" x2="622" y2="87.0" stroke="#e5e7eb"/><text x="50" y="90.0" font-size="10" fill="#6b7280" text-anchor="end">74.5%</text><line x1="58" y1="34.0" x2="622" y2="34.0" stroke="#e5e7eb"/><text x="50" y="37.0" font-size="10" fill="#6b7280" text-anchor="end">99.3%</text><rect x="72.5" y="167.8" width="51.6" height="78.2" fill="#3aa981" rx="2"/><text x="98.3" y="161.8" font-size="10" fill="#111827" text-anchor="middle">36.64%</text><text x="98.3" y="262" font-size="10" fill="#6b7280" text-anchor="middle">01-10</text><rect x="153.1" y="123.4" width="51.6" height="122.6" fill="#3aa981" rx="2"/><text x="178.9" y="117.4" font-size="10" fill="#111827" text-anchor="middle">57.42%</text><text x="178.9" y="262" font-size="10" fill="#6b7280" text-anchor="middle">11-20</text><rect x="233.6" y="113.3" width="51.6" height="132.7" fill="#3aa981" rx="2"/><text x="259.4" y="107.3" font-size="10" fill="#111827" text-anchor="middle">62.15%</text><text x="259.4" y="262" font-size="10" fill="#6b7280" text-anchor="middle">21-30</text><rect x="314.2" y="106.1" width="51.6" height="139.9" fill="#3aa981" rx="2"/><text x="340.0" y="100.1" font-size="10" fill="#111827" text-anchor="middle">65.53%</text><text x="340.0" y="262" font-size="10" fill="#6b7280" text-anchor="middle">31-40</text><rect x="394.8" y="98.3" width="51.6" height="147.7" fill="#3aa981" rx="2"/><text x="420.6" y="92.3" font-size="10" fill="#111827" text-anchor="middle">69.17%</text><text x="420.6" y="262" font-size="10" fill="#6b7280" text-anchor="middle">41-60</text><rect x="475.4" y="87.1" width="51.6" height="158.9" fill="#3aa981" rx="2"/><text x="501.1" y="81.1" font-size="10" fill="#111827" text-anchor="middle">74.42%</text><text x="501.1" y="262" font-size="10" fill="#6b7280" text-anchor="middle">61-100</text><rect x="555.9" y="66.3" width="51.6" height="179.7" fill="#3aa981" rx="2"/><text x="581.7" y="60.3" font-size="10" fill="#111827" text-anchor="middle">84.15%</text><text x="581.7" y="262" font-size="10" fill="#6b7280" text-anchor="middle">100+</text></svg>
+        </div>
+      </div>
+      <div class="card wide">
+        <h3>按条数段明细</h3>
+        <table><thead><tr><th>条数段</th><th>请求数</th><th>曝光数</th><th>商品点击率</th><th>请求点击率</th></tr></thead><tbody><tr><td>01-10</td><td>239,311</td><td>1,274,905</td><td>8.96%</td><td>36.64%</td></tr><tr><td>11-20</td><td>92,917</td><td>1,392,891</td><td>6.97%</td><td>57.42%</td></tr><tr><td>21-30</td><td>54,061</td><td>1,359,819</td><td>5.32%</td><td>62.15%</td></tr><tr><td>31-40</td><td>34,969</td><td>1,231,183</td><td>4.43%</td><td>65.53%</td></tr><tr><td>41-60</td><td>42,226</td><td>2,088,289</td><td>3.78%</td><td>69.17%</td></tr><tr><td>61-100</td><td>38,513</td><td>2,977,031</td><td>3.11%</td><td>74.42%</td></tr><tr><td>100+</td><td>37,015</td><td>6,982,515</td><td>2.19%</td><td>84.15%</td></tr></tbody></table>
+      </div>
+    </section>
+    
+
+    <section id="page3" class="page">
+      <h2>3 · 类目效率</h2>
+      <p class="lede">按同条数基准校准后，女装的每曝光差距从 0.78pp 收窄到 0.25pp；男鞋的差距反而最大。</p>
+      <div class="split">
+        <div class="card">
+          <h3>曝光量 Top 10 类目</h3>
+          <table><thead><tr><th>类目</th><th>曝光</th><th>点击率</th></tr></thead><tbody><tr><td>女装</td><td>3,519,127</td><td>3.05%</td></tr><tr><td>男装</td><td>1,197,274</td><td>3.23%</td></tr><tr><td>箱包/饰品</td><td>936,296</td><td>2.94%</td></tr><tr><td>手机/数码/电脑办公</td><td>927,496</td><td>4.29%</td></tr><tr><td>家居生活</td><td>905,901</td><td>4.02%</td></tr><tr><td>女鞋</td><td>785,874</td><td>2.84%</td></tr><tr><td>内衣/家居服/袜子</td><td>656,962</td><td>3.83%</td></tr><tr><td>童装/婴儿装/亲子装</td><td>582,387</td><td>3.20%</td></tr><tr><td>零食/坚果/特产</td><td>519,630</td><td>4.43%</td></tr><tr><td>运动户外鞋服</td><td>468,965</td><td>3.41%</td></tr></tbody></table>
+        </div>
+        <div class="card">
+          <h3>同条数校准后的缺口（百分点 / 缺口点击）</h3>
+          <svg viewBox="0 0 640 286" width="100%" role="img"><text x="122" y="29" font-size="11" fill="#111827" text-anchor="end">女装</text><rect x="128" y="19" width="142.4" height="14" fill="#e8590c" rx="2" opacity="0.85"/><text x="276.4" y="29" font-size="10" fill="#374151">+0.25pp (8,791)</text><text x="122" y="55" font-size="11" fill="#111827" text-anchor="end">男装</text><rect x="128" y="45" width="235.8" height="14" fill="#e8590c" rx="2" opacity="0.85"/><text x="369.8" y="55" font-size="10" fill="#374151">+0.41pp (4,952)</text><text x="122" y="81" font-size="11" fill="#111827" text-anchor="end">箱包/饰品</text><rect x="128" y="71" width="261.9" height="14" fill="#e8590c" rx="2" opacity="0.85"/><text x="395.9" y="81" font-size="10" fill="#374151">+0.46pp (4,300)</text><text x="122" y="107" font-size="11" fill="#111827" text-anchor="end">女鞋</text><rect x="128" y="97" width="229.5" height="14" fill="#e8590c" rx="2" opacity="0.85"/><text x="363.5" y="107" font-size="10" fill="#374151">+0.40pp (3,163)</text><text x="122" y="133" font-size="11" fill="#111827" text-anchor="end">男鞋</text><rect x="128" y="123" width="416.0" height="14" fill="#e8590c" rx="2" opacity="0.85"/><text x="550.0" y="133" font-size="10" fill="#374151">+0.73pp (2,090)</text><text x="122" y="159" font-size="11" fill="#111827" text-anchor="end">运动户外鞋服</text><rect x="128" y="149" width="198.5" height="14" fill="#e8590c" rx="2" opacity="0.85"/><text x="332.5" y="159" font-size="10" fill="#374151">+0.35pp (1,632)</text><text x="122" y="185" font-size="11" fill="#111827" text-anchor="end">玩具/早教益智</text><rect x="128" y="175" width="233.7" height="14" fill="#e8590c" rx="2" opacity="0.85"/><text x="367.7" y="185" font-size="10" fill="#374151">+0.41pp (956)</text><text x="122" y="211" font-size="11" fill="#111827" text-anchor="end">节庆用品/礼品</text><rect x="128" y="201" width="332.8" height="14" fill="#e8590c" rx="2" opacity="0.85"/><text x="466.8" y="211" font-size="10" fill="#374151">+0.58pp (831)</text><text x="122" y="237" font-size="11" fill="#111827" text-anchor="end">童装/婴儿装/亲子装</text><rect x="128" y="227" width="73.1" height="14" fill="#e8590c" rx="2" opacity="0.85"/><text x="207.1" y="237" font-size="10" fill="#374151">+0.13pp (746)</text><text x="122" y="263" font-size="11" fill="#111827" text-anchor="end">服饰配件/皮带/帽子/…</text><rect x="128" y="253" width="130.9" height="14" fill="#e8590c" rx="2" opacity="0.85"/><text x="264.9" y="263" font-size="10" fill="#374151">+0.23pp (491)</text></svg>
+          <p class="note">橙色为实际低于期望；灰色为高于期望。</p>
+        </div>
+      </div>
+    </section>
+    
+
+    <section id="page4" class="page">
+      <h2>4 · 需求结构</h2>
+      <p class="lede">规则标签只用于结构描述：按同条数校准后，各标签的效率差异都在 ±0.2pp 内，品牌/店铺词甚至略好于期望。</p>
+      <div class="split">
+        <div class="card">
+          <h3>请求占比（训练段）</h3>
+          <table><thead><tr><th>需求标签</th><th>请求数</th><th>占比</th><th>平均条数</th><th>商品点击率</th></tr></thead><tbody><tr><td>纯品类词</td><td>212,956</td><td>39.5%</td><td>31.8</td><td>3.91%</td></tr><tr><td>无品类信号</td><td>198,402</td><td>36.8%</td><td>25.8</td><td>4.20%</td></tr><tr><td>品类+修饰词</td><td>77,406</td><td>14.4%</td><td>46.7</td><td>3.28%</td></tr><tr><td>属性/场景词（无品类）</td><td>34,346</td><td>6.4%</td><td>42.3</td><td>3.22%</td></tr><tr><td>品牌/店铺词</td><td>15,902</td><td>3.0%</td><td>22.0</td><td>4.70%</td></tr></tbody></table>
+        </div>
+        <div class="card">
+          <h3>同条数校准后的差距</h3>
+          <svg viewBox="0 0 640 156" width="100%" role="img"><text x="144" y="29" font-size="11" fill="#111827" text-anchor="end">属性/场景词（无品类）</text><rect x="150" y="19" width="230.7" height="14" fill="#e8590c" rx="2" opacity="0.85"/><text x="386.7" y="29" font-size="10" fill="#374151">+0.20pp (2,900)</text><text x="144" y="55" font-size="11" fill="#111827" text-anchor="end">品类+修饰词</text><rect x="150" y="45" width="70.2" height="14" fill="#e8590c" rx="2" opacity="0.85"/><text x="226.2" y="55" font-size="10" fill="#374151">+0.06pp (2,193)</text><text x="144" y="81" font-size="11" fill="#111827" text-anchor="end">品牌/店铺词</text><rect x="150" y="71" width="394.0" height="14" fill="#9ca3af" rx="2" opacity="0.85"/><text x="550.0" y="81" font-size="10" fill="#374151">-0.34pp (-1,191)</text><text x="144" y="107" font-size="11" fill="#111827" text-anchor="end">无品类信号</text><rect x="150" y="97" width="33.8" height="14" fill="#9ca3af" rx="2" opacity="0.85"/><text x="189.8" y="107" font-size="10" fill="#374151">-0.03pp (-1,500)</text><text x="144" y="133" font-size="11" fill="#111827" text-anchor="end">纯品类词</text><rect x="150" y="123" width="41.0" height="14" fill="#9ca3af" rx="2" opacity="0.85"/><text x="197.0" y="133" font-size="10" fill="#374151">-0.04pp (-2,401)</text></svg>
+          <p class="note">负值表示实际好于同条数期望。</p>
+        </div>
+      </div>
+    </section>
+    
+
+    <section id="page5" class="page">
+      <h2>5 · 机会清单</h2>
+      <p class="lede">Top 30 合计 64.6 万曝光，实际 14,828 次点击，同条数期望 21,244 次，缺口约 6,400 次（≈1.0% 曝光）。</p>
+      <div class="card wide scroll">
+        <table><thead><tr><th>#</th><th>搜索词</th><th>请求</th><th>曝光</th><th>实际 CTR</th><th>期望 CTR</th><th>差距</th><th>缺口点击</th><th>请求点击率</th><th>测试段</th></tr></thead><tbody><tr><td>1</td><td>鞋子</td><td>808</td><td>35,904</td><td>1.98%</td><td>3.45%</td><td class="num"><span class="chip">1.47pp</span></td><td class="num">527</td><td>45.54%</td><td>后段方向一致</td></tr><tr><td>2</td><td>衣服</td><td>437</td><td>17,288</td><td>1.30%</td><td>3.54%</td><td class="num"><span class="chip">2.24pp</span></td><td class="num">387</td><td>29.29%</td><td>后段方向一致</td></tr><tr><td>3</td><td>外套</td><td>1,155</td><td>50,565</td><td>2.67%</td><td>3.43%</td><td class="num"><span class="chip">0.75pp</span></td><td class="num">381</td><td>47.62%</td><td>后段方向一致</td></tr><tr><td>4</td><td>裤子</td><td>915</td><td>31,150</td><td>2.58%</td><td>3.76%</td><td class="num"><span class="chip">1.18pp</span></td><td class="num">368</td><td>42.08%</td><td>后段方向一致</td></tr><tr><td>5</td><td>手机壳</td><td>1,169</td><td>48,864</td><td>2.68%</td><td>3.42%</td><td class="num"><span class="chip">0.74pp</span></td><td class="num">362</td><td>50.90%</td><td>后段方向一致</td></tr><tr><td>6</td><td>外套女春秋款</td><td>512</td><td>31,207</td><td>2.00%</td><td>3.07%</td><td class="num"><span class="chip">1.07pp</span></td><td class="num">334</td><td>48.05%</td><td>后段方向一致</td></tr><tr><td>7</td><td>卫衣</td><td>768</td><td>29,316</td><td>2.76%</td><td>3.71%</td><td class="num"><span class="chip">0.95pp</span></td><td class="num">278</td><td>51.69%</td><td>后段方向一致</td></tr><tr><td>8</td><td>上衣</td><td>318</td><td>14,209</td><td>1.65%</td><td>3.32%</td><td class="num"><span class="chip">1.67pp</span></td><td class="num">237</td><td>36.79%</td><td>后段方向一致</td></tr><tr><td>9</td><td>鞋子女潮流ins百搭学生党</td><td>327</td><td>22,312</td><td>1.97%</td><td>3.02%</td><td class="num"><span class="chip">1.05pp</span></td><td class="num">234</td><td>59.02%</td><td>后段方向一致</td></tr><tr><td>10</td><td>书包</td><td>380</td><td>19,516</td><td>2.09%</td><td>3.23%</td><td class="num"><span class="chip">1.15pp</span></td><td class="num">223</td><td>46.84%</td><td>后段方向一致</td></tr><tr><td>11</td><td>鞋子女款</td><td>476</td><td>26,548</td><td>2.38%</td><td>3.18%</td><td class="num"><span class="chip">0.79pp</span></td><td class="num">210</td><td>52.31%</td><td>后段方向一致</td></tr><tr><td>12</td><td>鞋子男款潮流</td><td>358</td><td>22,245</td><td>2.17%</td><td>3.07%</td><td class="num"><span class="chip">0.90pp</span></td><td class="num">200</td><td>54.19%</td><td>后段方向一致</td></tr><tr><td>13</td><td>裤子女款</td><td>478</td><td>21,969</td><td>2.44%</td><td>3.36%</td><td class="num"><span class="chip">0.91pp</span></td><td class="num">200</td><td>48.54%</td><td>后段方向一致</td></tr><tr><td>14</td><td>女装春秋款2025新款</td><td>249</td><td>20,054</td><td>1.82%</td><td>2.81%</td><td class="num"><span class="chip">0.99pp</span></td><td class="num">199</td><td>44.58%</td><td>后段方向未复现</td></tr><tr><td>15</td><td>水杯</td><td>375</td><td>18,925</td><td>2.22%</td><td>3.25%</td><td class="num"><span class="chip">1.03pp</span></td><td class="num">194</td><td>56.53%</td><td>后段方向未复现</td></tr><tr><td>16</td><td>零食小吃休闲食品</td><td>302</td><td>20,812</td><td>2.09%</td><td>2.98%</td><td class="num"><span class="chip">0.89pp</span></td><td class="num">185</td><td>58.61%</td><td>后段方向一致</td></tr><tr><td>17</td><td>零食</td><td>603</td><td>38,232</td><td>2.58%</td><td>3.06%</td><td class="num"><span class="chip">0.47pp</span></td><td class="num">181</td><td>57.38%</td><td>后段方向一致</td></tr><tr><td>18</td><td>秋季套装女新款</td><td>274</td><td>15,132</td><td>2.04%</td><td>3.15%</td><td class="num"><span class="chip">1.11pp</span></td><td class="num">168</td><td>44.16%</td><td>后段方向一致</td></tr><tr><td>19</td><td>包包女款2025爆款</td><td>156</td><td>15,977</td><td>1.60%</td><td>2.64%</td><td class="num"><span class="chip">1.04pp</span></td><td class="num">166</td><td>55.77%</td><td>验证样本不足</td></tr><tr><td>20</td><td>裤子女款爆款2025新款春秋款</td><td>354</td><td>22,050</td><td>2.37%</td><td>3.09%</td><td class="num"><span class="chip">0.71pp</span></td><td class="num">157</td><td>57.63%</td><td>验证样本不足</td></tr><tr><td>21</td><td>女鞋</td><td>227</td><td>14,950</td><td>2.05%</td><td>2.97%</td><td class="num"><span class="chip">0.92pp</span></td><td class="num">137</td><td>51.98%</td><td>后段方向一致</td></tr><tr><td>22</td><td>女装</td><td>199</td><td>8,765</td><td>1.86%</td><td>3.40%</td><td class="num"><span class="chip">1.54pp</span></td><td class="num">134</td><td>32.66%</td><td>后段方向一致</td></tr><tr><td>23</td><td>手链</td><td>375</td><td>14,872</td><td>2.80%</td><td>3.66%</td><td class="num"><span class="chip">0.85pp</span></td><td class="num">127</td><td>47.47%</td><td>后段方向一致</td></tr><tr><td>24</td><td>毛衣</td><td>167</td><td>6,699</td><td>1.61%</td><td>3.47%</td><td class="num"><span class="chip">1.86pp</span></td><td class="num">124</td><td>32.93%</td><td>验证样本不足</td></tr><tr><td>25</td><td>短袖</td><td>361</td><td>13,608</td><td>2.82%</td><td>3.74%</td><td class="num"><span class="chip">0.91pp</span></td><td class="num">124</td><td>48.75%</td><td>后段方向一致</td></tr><tr><td>26</td><td>鞋</td><td>342</td><td>13,960</td><td>2.61%</td><td>3.43%</td><td class="num"><span class="chip">0.83pp</span></td><td class="num">115</td><td>46.78%</td><td>后段方向一致</td></tr><tr><td>27</td><td>男鞋</td><td>324</td><td>16,213</td><td>2.46%</td><td>3.17%</td><td class="num"><span class="chip">0.71pp</span></td><td class="num">114</td><td>54.01%</td><td>后段方向一致</td></tr><tr><td>28</td><td>包包</td><td>202</td><td>12,458</td><td>2.15%</td><td>3.06%</td><td class="num"><span class="chip">0.91pp</span></td><td class="num">113</td><td>59.90%</td><td>后段方向一致</td></tr><tr><td>29</td><td>耳钉</td><td>277</td><td>13,352</td><td>2.53%</td><td>3.38%</td><td class="num"><span class="chip">0.84pp</span></td><td class="num">112</td><td>58.12%</td><td>后段方向一致</td></tr><tr><td>30</td><td>板鞋</td><td>238</td><td>9,262</td><td>2.38%</td><td>3.58%</td><td class="num"><span class="chip">1.21pp</span></td><td class="num">112</td><td>47.48%</td><td>后段方向一致</td></tr></tbody></table>
+      </div>
+    </section>
+    
+<section class="page">
+  <h2>附 · 相对时间（不可还原为日期）</h2>
+  <p class="lede">20 个等宽区间，只用于看量级波动，不能当作星期/小时趋势。</p>
+  <div class="card wide">
+    <table><thead><tr><th>相对区间</th><th>请求数</th><th>商品点击率</th><th>请求点击率</th></tr></thead>
+    <tbody><tr><td>0</td><td>25,805</td><td>3.89%</td><td>54.21%</td></tr><tr><td>1</td><td>26,803</td><td>3.78%</td><td>53.28%</td></tr><tr><td>2</td><td>27,737</td><td>3.75%</td><td>52.86%</td></tr><tr><td>3</td><td>28,037</td><td>3.84%</td><td>53.27%</td></tr><tr><td>4</td><td>27,941</td><td>3.85%</td><td>53.61%</td></tr><tr><td>5</td><td>26,866</td><td>3.80%</td><td>52.57%</td></tr><tr><td>6</td><td>26,828</td><td>3.90%</td><td>53.53%</td></tr><tr><td>7</td><td>27,968</td><td>3.84%</td><td>52.56%</td></tr><tr><td>8</td><td>29,022</td><td>3.81%</td><td>53.38%</td></tr><tr><td>9</td><td>27,689</td><td>3.88%</td><td>53.57%</td></tr><tr><td>10</td><td>27,630</td><td>3.86%</td><td>53.13%</td></tr><tr><td>11</td><td>27,093</td><td>3.76%</td><td>53.29%</td></tr><tr><td>12</td><td>29,448</td><td>3.74%</td><td>51.86%</td></tr><tr><td>13</td><td>30,228</td><td>3.79%</td><td>53.03%</td></tr><tr><td>14</td><td>28,016</td><td>3.87%</td><td>53.74%</td></tr><tr><td>15</td><td>28,073</td><td>3.89%</td><td>52.55%</td></tr><tr><td>16</td><td>27,270</td><td>3.82%</td><td>52.82%</td></tr><tr><td>17</td><td>28,561</td><td>3.82%</td><td>52.87%</td></tr><tr><td>18</td><td>26,818</td><td>3.86%</td><td>54.25%</td></tr><tr><td>19</td><td>11,179</td><td>3.75%</td><td>53.05%</td></tr></tbody></table>
+  </div>
+</section>
+</main>
+<footer>
+  口径：商品点击率 = 点击商品/曝光商品；请求点击率 = 有点击的请求/请求；期望点击 = Σ(条数段曝光 × 该段训练基准 CTR)。
+  数据为公开聚合结果，不含用户级明细。完整口径见 docs/metrics.md。
+</footer>
+</body>
+</html>
