@@ -1,13 +1,13 @@
-﻿# 快手电商搜索需求与转化效率诊断
+# 快手电商搜索需求与转化效率诊断
 
 用 KuaiSearch-Lite 的真实搜索行为，回答一个运营问题：**哪些搜索需求有曝光、有需求，却没被结果页接住？**
 
-> 555,553 次真实搜索 · 17,800,904 次商品曝光 · 102,086 名用户 · 278,615 个去重搜索词
+> 555,553 次真实搜索 · 17,800,904 次商品曝光 · 102,086 名用户 · 278,615 个去重搜索词  
 > 数据来源：[KuaiSearch-Lite](https://huggingface.co/datasets/benchen4395/KuaiSearch)（2025 年 6 月后的快手电商搜索行为样本，Lite 为采样数据）
 
 ## 30 秒结论
 
-**列表条数是解释商品点击率差异的重要分层变量。**当前数据支持描述性诊断，尚不能确定低点击的原因。
+**列表条数是解释商品点击率差异的重要分层变量。**&#x5F53;前数据支持描述性诊断，尚不能确定低点击的原因。
 
 - 6.9% 的请求记录 ≥100 条商品曝光，贡献 **40.3% 的曝光**；这些请求的商品点击率为 **2.19%**，请求点击率为 **84.1%**。两种比率分母不同。
 - 按"同展示条数"校准后，部分品类和规则需求标签的描述性差距缩小（女装差距从 0.78pp 收窄到 **0.25pp**）；需求标签尚未人工校核。
@@ -19,31 +19,31 @@
 
 ## 关键数字
 
-| 指标 | 训练段 | 测试段（时间外） |
-| --- | --- | --- |
-| 搜索请求 | 539,012 | 16,541 |
-| 商品曝光 | 17,306,633 | 494,271 |
-| 商品点击率（点击商品/曝光） | 3.83% | 3.80% |
-| 请求点击率（有点击的请求/请求） | 53.16% | 51.12% |
-| 购买请求率（有购买的请求/请求） | 8.81% | 8.83% |
-| 平均展示条数 | 32.1 | 29.9 |
+| 指标               | 训练段        | 测试段（时间外） |
+| ---------------- | ---------- | -------- |
+| 搜索请求             | 539,012    | 16,541   |
+| 商品曝光             | 17,306,633 | 494,271  |
+| 商品点击率（点击商品/曝光）   | 3.83%      | 3.80%    |
+| 请求点击率（有点击的请求/请求） | 53.16%     | 51.12%   |
+| 购买请求率（有购买的请求/请求） | 8.81%      | 8.83%    |
+| 平均展示条数           | 32.1       | 29.9     |
 
-| 结构发现 | 数值 |
-| --- | --- |
-| 100+ 条列表的请求占比 | 6.9% |
-| 100+ 条列表的曝光占比 | 40.3% |
-| 1–10 条 vs 100+ 条的商品点击率 | 8.96% vs 2.19% |
-| 通过样本门槛且存在正缺口的搜索词 | 124 个（现有 q 值不用于确认性推断） |
-| Top 30 缺口点击 | ~6,416 次 / 64.6 万曝光（~1.0%） |
+| 结构发现                   | 数值                         |
+| ---------------------- | -------------------------- |
+| 100+ 条列表的请求占比          | 6.9%                       |
+| 100+ 条列表的曝光占比          | 40.3%                      |
+| 1–10 条 vs 100+ 条的商品点击率 | 8.96% vs 2.19%             |
+| 通过样本门槛且存在正缺口的搜索词       | 124 个（现有 q 值不用于确认性推断）      |
+| Top 30 缺口点击            | ~6,416 次 / 64.6 万曝光（~1.0%） |
 
-## 已完成的验证
+## 已完成的验证（作者抽检 30 条：26/4/0）
 
 - **质量断言**：39 项对账（请求=会话、曝光=求和、位置越界 0、意图覆盖 100%），任一失败 `run.py` 中止且不覆盖旧库。
 - **三路对账**：同一批数字用 DuckDB(库) / DuckDB(Parquet) / 纯 Python(聚合 CSV) 各算一遍，5 个核心指标全部一致（`outputs_public/engine_check.json`）。
 - **确定性导出**：导出统一保留 10 位有效数字并加稳定排序键，连续两次全量重建的 14 个公开 CSV 哈希完全一致（耗时类字段除外）。
 - **位置敏感性**：把召回列表中的位置也放进基准（条数 × 位置两层）后，Top 30 的描述性缺口变化最大 0.009pp（`outputs_public/sensitivity_position.csv`）。这不能识别用户实际看到的排序位或解释低点击原因。
 - **第四引擎（Spark）**：Apache Spark 4.3.0 本地模式复算同一批指标，结果与 DuckDB 完全一致（`outputs_public/spark_check.json`）；启动 5.8s、聚合 1.4s/2.2s。详见 [技术栈](docs/tech-stack.md)。
-- **看板**：`dashboards/preview.html` 可直接打开；本机另有 Power BI 八页 `.pbix`，涵盖总览、条数效率、品类残差、需求标签、机会清单、标题审阅、相对时间和运营动作。
+- **看板**：八页静态报告已生成（`dashboards/静态看板.pptx` 源文件 + `看板.pdf` + 8 张 1600×900 截图），每页可复算：总览、条数效率、品类残差、需求标签、机会清单、标题预筛、相对时间、运营动作。
 
 ## 方法：先校准口径，再谈机会
 
@@ -107,6 +107,8 @@ python scripts/position_sensitivity.py    # 位置敏感性复核（条数 × �
 python scripts/export_parquet.py   # 导出 Parquet（ClickHouse 对账或免重建查询用）
 python scripts/build_dashboard_data.py    # Power BI 单文件数据源（需要 openpyxl）
 python scripts/build_dashboard_preview.py # 静态看板预览
+python scripts/build_static_dashboard.py  # 生成八页看板源文件（PPTX）
+python scripts/export_dashboard.py         # 渲染 8 张 PNG + PDF（PowerPoint COM）
 python scripts/normalize_screenshots.py    # 截图统一裁切为 1600×900
 python scripts/check_dashboard_assets.py   # 校验 PDF/截图（发布前必跑）
 python scripts/make_charts.py      # 重新生成 README 图表
@@ -121,12 +123,12 @@ python scripts/make_charts.py      # 重新生成 README 图表
 
 ## 看板
 
-已制作 Power BI Desktop 八页报告：总览 / 条数效率 / 品类残差 / 需求标签 / 机会清单 / 标题预筛 / 相对时间 / 运营动作。本机文件为 `dashboards/kuaisearch-search-ops.pbix`，其中含 Top 30 搜索词。`.pbix` 被 `.gitignore` 排除，克隆仓库不会获得它；确认数据许可和词级内容后，计划通过 GitHub Release 附件或网盘提供下载。搭建与口径见 [Power BI 手册](docs/powerbi.md)。
+八页静态报告：总览 / 条数效率 / 品类残差 / 需求标签 / 机会清单 / 标题预筛 / 相对时间 / 运营动作。源文件 `dashboards/静态看板.pptx`，导出物为 `看板.pdf` 与 8 张 1600×900 截图；改完 PPTX 后运行 `python scripts/export_dashboard.py` 重新生成，再跑 `python scripts/check_dashboard_assets.py` 校验。仓库里另有一个 Power BI `.pbix`（含 Top 30 搜索词），但当前环境未安装 Power BI，未做打开验证，也不随仓库分发。
 
 - 先看 [静态看板](dashboards/preview.html)（双击打开，无需安装任何软件）；`docs-site/index.html` 是 GitHub Pages 准备稿。
-- [八页 PDF](dashboards/看板.pdf) 与下方截图为本机看板导出物；重新导出后运行 `python scripts/check_dashboard_assets.py` 校验页数、尺寸、空白页与截图中的应用界面条。
+- [八页 PDF](dashboards/看板.pdf) 与下方截图由 `scripts/export_dashboard.py` 从 PPTX 渲染，不经 Power BI；改完源文件后重跑该脚本，再用 `check_dashboard_assets.py` 校验。
 - 数据源：`dashboards/data/kuaisearch_dashboard.xlsx`（本版导入 11 张数据表；未导入年龄表）。
-  
+
 ![列表条数效率页](dashboards/images/page02.png)
 
 ![品类残差页](dashboards/images/page03.png)
@@ -142,20 +144,20 @@ PDF 第 5 页含 Top 30 搜索词；示例词为样本中的高频泛词，公�
 
 ## 文档
 
-| 文档 | 内容 |
-| --- | --- |
-| [分析报告](docs/analysis-report.md) | 完整业务报告：结论、证据、动作、限制 |
-| [承接证据审阅](docs/evidence-review.md) | 商品级审阅表怎么读、怎么填、能得出什么 |
-| [指标口径](docs/metrics.md) | 每个指标的分母、公式与使用边界 |
-| [数据字典](docs/data-dictionary.md) | 字段、规模、质量审计、已知问题 |
-| [实验方案](docs/experiment-design.md) | 3 个动作的假设、分流、主/护栏指标、样本量 |
-| [Power BI 手册](docs/powerbi.md) | 已制作报告与后续优化版式的操作说明 |
-| [技术栈](docs/tech-stack.md) | DuckDB 取舍、ClickHouse 对账资产、Spark 实测与选型建议 |
-| [面试材料](docs/interview.md) | 30 秒/2 分钟讲法、10 个追问、简历表述 |
-| [路线图](docs/roadmap.md) | 阶段计划、当前进度与验收标准 |
-| [交接说明](docs/handoff-codex.md) | 给优化方的完整交接：结论、口径、文件地图、已知弱点与优化任务 |
-| [交付与审阅指南](docs/delivery-guide.md) | 本机成果清单、建议审阅顺序、发布边界与反馈重点 |
-| [数据许可](docs/data-license.md) | 数据集 MIT 核查记录、可发布清单、搜索词敏感性扫描 |
+| 文档                                | 内容                                      |
+| --------------------------------- | --------------------------------------- |
+| [分析报告](docs/analysis-report.md)   | 完整业务报告：结论、证据、动作、限制                      |
+| [承接证据审阅](docs/evidence-review.md) | 商品级审阅表怎么读、怎么填、能得出什么                     |
+| [指标口径](docs/metrics.md)           | 每个指标的分母、公式与使用边界                         |
+| [数据字典](docs/data-dictionary.md)   | 字段、规模、质量审计、已知问题                         |
+| [实验方案](docs/experiment-design.md) | 3 个动作的假设、分流、主/护栏指标、样本量                  |
+| [Power BI 手册](docs/powerbi.md)    | 已制作报告与后续优化版式的操作说明                       |
+| [技术栈](docs/tech-stack.md)         | DuckDB 取舍、ClickHouse 对账资产、Spark 实测与选型建议 |
+| [面试材料](docs/interview.md)         | 30 秒/2 分钟讲法、10 个追问、简历表述                 |
+| [路线图](docs/roadmap.md)            | 阶段计划、当前进度与验收标准                          |
+| [交接说明](docs/handoff-codex.md)     | 给优化方的完整交接：结论、口径、文件地图、已知弱点与优化任务          |
+| [交付与审阅指南](docs/delivery-guide.md) | 本机成果清单、建议审阅顺序、发布边界与反馈重点                 |
+| [数据许可](docs/data-license.md)      | 数据集 MIT 核查记录、可发布清单、搜索词敏感性扫描             |
 
 ## 许可
 

@@ -9,12 +9,11 @@
 - [x] 数据集许可已核查：Hugging Face 标注 **MIT**（2026-11-22，`license:mit`），记录见 [数据许可](data-license.md)。
 - [x] 搜索词敏感性已扫描：Top 30 无手机号/身份证/联系方式，仅 2 个长词（促销/长尾表达）。
 - [x] 抽检表已预填建议值并加 `已核对（填 Y）` 列：`outputs/spotcheck_30.xlsx`。
-- [x] 看板资源检查脚本 `scripts/check_dashboard_assets.py` 已就绪（当前退出码 1，见 B）。
+- [x] 八页静态报告已重做：`dashboards/静态看板.pptx` → 8 张 1600×900 PNG + `看板.pdf`，`check_dashboard_assets.py` 退出码 0（无应用界面条、无空白页）。
 
 ## B 需要项目作者人工确认（按优先级）
 
-- [ ] **重新导出看板（约 10 分钟）**：当前 8 张截图都带同一条应用界面栏，第 6 页接近空白，第 5 页表头被遮挡。
-      按 [Power BI 手册](powerbi.md) 第 6 节操作后运行 `python scripts/check_dashboard_assets.py`，退出码为 0 才算通过。
+- [ ] **Power BI 版是否保留**：`dashboards/kuaisearch-search-ops.pbix` 存在，但本机未安装 Power BI，未验证；若不打算安装，简历只写“八页诊断报告（PPTX/PDF）”。
 - [ ] 逐条确认 `outputs/spotcheck_30.xlsx` 的 30 行（约 5–15 分钟）：H/I 列是工具预填建议，核对后在 L 列填 Y，
       再运行 `python scripts/apply_spotcheck.py`；不确认则不会生成任何汇总。
 - [ ] 决定 `.pbix` 是否公开；若公开，先检查其嵌入模型与附件内容，再放 Release 或网盘。

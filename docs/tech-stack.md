@@ -9,7 +9,8 @@
 | Python | 3.13 | 下载校验、管道编排、统计与导出 | ✅ 已运行 |
 | DuckDB | 2.0.0 | 单机列存分析库，17.8M 曝光聚合 | ✅ 已运行 |
 | SQL | DuckDB 方言 | staging / intermediate / marts 三层 | ✅ 已运行 |
-| Power BI Desktop | 2.159.1231.0 | 展示层（八页本机报告） | ✅ `.pbix` 已创建并保存；仍可继续美化 |
+| PowerPoint（渲染） | 16.0 | 把八页 PPTX 渲染成 1600×900 PNG 与 PDF | ✅ 已运行（pywin32 COM） |
+| Power BI Desktop | — | 展示层（`.pbix` 存在） | ⚠️ 当前环境未安装，未验证 |
 | ClickHouse | — | 服务层复算与耗时对比 | ⛔ 未安装（本机无 Docker/WSL2） |
 | Spark | 4.3.0 | 本地模式复算与 DuckDB 对账 | ✅ 已运行 |
 

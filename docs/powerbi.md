@@ -1,6 +1,6 @@
 # Power BI 看板搭建与交付说明
 
-> 当前本机已生成 `dashboards/kuaisearch-search-ops.pbix`：八页、11 张导入表，Power BI Desktop 实际保存。新增相对时间趋势与运营动作页；下文部分 DAX 与五页版式是后续优化方案，不能当作已完成内容。
+> **现状**：发布物是八页静态报告（`dashboards/静态看板.pptx` + `看板.pdf` + 8 张截图），由 `scripts/build_static_dashboard.py` 与 `scripts/export_dashboard.py` 生成。Power BI 文件 `dashboards/kuaisearch-search-ops.pbix` 存在，但当前环境未安装 Power BI，**未做打开验证**；下文是重建 Power BI 版的操作说明。
 > `.pbix` 含 Top 30 搜索词，不含用户级明细；暂只在本机供审阅，不上传 GitHub Release。
 
 ## 1. 安装与准备
