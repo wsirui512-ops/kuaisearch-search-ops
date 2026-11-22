@@ -1,7 +1,7 @@
 """Build a static, dependency-free dashboard preview (dashboards/preview.html).
 
-It mirrors the five Power BI pages so the layout can be reviewed before the workbook
-is rebuilt, and it doubles as a fallback portfolio page that needs no software.
+It mirrors the eight report pages so the layout can be reviewed in a browser and
+doubles as a portfolio page that needs no software.
 All data comes from outputs_public/, so the file is safe to publish.
 """
 
@@ -316,7 +316,7 @@ def main() -> None:
 <body>
 <header>
   <h1>快手电商搜索需求与转化效率诊断</h1>
-  <p>555,553 次搜索 · 17,800,904 次曝光 · 102,086 名用户｜静态预览版（正式看板用 Power BI，见 docs/powerbi.md）</p>
+  <p>555,553 次搜索 · 17,800,904 次曝光 · 102,086 名用户｜静态预览版（由 outputs_public 渲染）</p>
 </header>
 <nav>
   <a href="#page1">总览</a><a href="#page2">条数效率</a><a href="#page3">类目效率</a>

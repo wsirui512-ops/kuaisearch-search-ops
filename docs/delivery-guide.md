@@ -29,7 +29,7 @@
 - 555,553 次搜索、17,800,904 次曝光、680,790 次点击与 102,086 名去重用户来自固定版本四份 JSONL；下载清单记录 SHA-256。
 - `python run.py` 构建分析库和聚合结果；39 项数据质量断言通过。
 - DuckDB 数据库、DuckDB Parquet 和纯 Python 聚合三路核心指标一致；Spark 4.3 本地模式复算核心指标一致。
-- 100 行标题二字覆盖率属于自动预筛；尚未人工抽检，不据此判断相关性。
+- 100 行标题二字覆盖率属于自动预筛；人工抽检另取 30 条（26/4/0），两者不混用。
 - 八页静态报告由 `scripts/build_static_dashboard.py` 从 `outputs_public/` 生成，`scripts/export_dashboard.py` 渲染为 PNG/PDF；`check_dashboard_assets.py` 校验通过（8 页、1600×900、无空白页、无应用界面条）。
 - `powershell -ExecutionPolicy Bypass -File scripts/check_all.ps1 -SkipBuild` 校验聚合对账、静态看板、数据源和文档关键数字。
 

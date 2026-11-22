@@ -5,8 +5,7 @@
 3. Pure Python over the exported aggregates in outputs_public/.
 
 The point is to prove the published numbers do not depend on one query engine or
-one storage format. ClickHouse runs the same SQL as step 2 once a container is
-available; see sql/clickhouse/ and docs/tech-stack.md.
+one storage format. Spark runs the same aggregation separately (see spark_check.py).
 """
 
 from __future__ import annotations

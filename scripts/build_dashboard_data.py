@@ -1,7 +1,6 @@
-"""Pack the public aggregates into one workbook for Power BI / Excel.
+"""Pack the public aggregates into one workbook for Excel or BI tools.
 
-Power BI can import a multi-sheet Excel file with a single connection, which is the
-fastest path for a beginner: `Get Data -> Excel workbook -> select all sheets`.
+A multi-sheet workbook is the easiest hand-off: one file, twelve sheets, typed columns.
 """
 
 from __future__ import annotations
@@ -58,7 +57,7 @@ TEXT_COLUMNS = {
 
 
 def parse_value(name: str, raw: str):
-    """Keep labels as text, store the rest as numbers so Power BI can aggregate them."""
+    """Keep labels as text and store the rest as numbers so tools can aggregate them."""
     if name in TEXT_COLUMNS or raw == "":
         return raw or None
     try:

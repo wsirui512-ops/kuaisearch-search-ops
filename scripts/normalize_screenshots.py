@@ -1,6 +1,6 @@
 """Normalize dashboard screenshots to exactly 1600x900 without distorting the chart area.
 
-Power BI screenshots rarely come out at the exact size. This script centre-crops the
+Dashboard screenshots rarely come out at the exact size. This script centre-crops the
 image to 16:9 and resizes it, so `check_dashboard_assets.py` can pass.
 
 Usage:

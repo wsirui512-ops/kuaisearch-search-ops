@@ -1,6 +1,6 @@
 """Export the fact and request tables to Parquet for cross-engine verification.
 
-Parquet is the interchange format for the ClickHouse check (see sql/clickhouse/)
+Parquet is the interchange format for cross-engine checks (Spark read, Python read)
 and a cheaper way to re-query the data without rebuilding the DuckDB file.
 """
 

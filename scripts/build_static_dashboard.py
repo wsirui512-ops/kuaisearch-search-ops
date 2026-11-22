@@ -1,7 +1,7 @@
 """Build the eight-page static dashboard (PPTX) from the published aggregates.
 
-The Power BI file cannot be opened on this machine (not installed), so this deck is the
-publishable, reproducible visual: same numbers, same page order, no app chrome.
+The deck is the publishable, reproducible visual: numbers come straight from
+outputs_public, so any metric change flows through two commands.
 Exported to 1600x900 PNG and PDF by scripts/export_dashboard.ps1.
 """
 
@@ -43,11 +43,11 @@ def read(name: str) -> list[dict[str, str]]:
         return list(csv.DictReader(stream))
 
 
-def text_box(slide, left, top, width, height, text, size=14, bold=False, color=NAVY, align=PP_ALIGN.LEFT):
+def text_box(slide, left, top, width, height, text, size=14, bold=False, color=NAVY, align=PP_ALIGN.LEFT, anchor=MSO_ANCHOR.TOP):
     box = slide.shapes.add_textbox(left, top, width, height)
     frame = box.text_frame
     frame.word_wrap = True
-    frame.vertical_anchor = MSO_ANCHOR.TOP
+    frame.vertical_anchor = anchor
     line = frame.paragraphs[0]
     line.alignment = align
     run = line.add_run()
@@ -278,10 +278,10 @@ def main() -> None:
         top = Inches(1.45 + index * 1.72)
         card = slide.shapes.add_shape(1, Inches(0.55), top, Inches(12.2), Inches(1.25))
         card.fill.solid(); card.fill.fore_color.rgb = LIGHT; card.line.color.rgb = RGBColor(0xE3, 0xE6, 0xEC)
-        text_box(slide, Inches(0.75), top + Inches(0.18), Inches(2.4), Inches(0.4), name, size=15, bold=True, color=BLUE)
-        text_box(slide, Inches(3.2), top + Inches(0.18), Inches(4.0), Inches(0.9), what, size=11)
-        text_box(slide, Inches(7.5), top + Inches(0.18), Inches(2.7), Inches(0.9), f"主指标：{metric}", size=10.5, color=GREY)
-        text_box(slide, Inches(10.5), top + Inches(0.18), Inches(2.1), Inches(0.9), f"{owner}\n{size}", size=10.5, color=GREY)
+        text_box(slide, Inches(0.75), top, Inches(2.4), Inches(1.25), name, size=15, bold=True, color=BLUE, anchor=MSO_ANCHOR.MIDDLE)
+        text_box(slide, Inches(3.2), top, Inches(4.0), Inches(1.25), what, size=11.5, anchor=MSO_ANCHOR.MIDDLE)
+        text_box(slide, Inches(7.5), top, Inches(2.7), Inches(1.25), f"主指标：{metric}", size=10.5, color=GREY, anchor=MSO_ANCHOR.MIDDLE)
+        text_box(slide, Inches(10.5), top, Inches(2.1), Inches(1.25), f"{owner}\n{size}", size=10.5, color=GREY, anchor=MSO_ANCHOR.MIDDLE)
     text_box(slide, Inches(0.55), Inches(6.75), Inches(12.2), Inches(0.3),
              "判读：主指标提升且护栏（请求点击率）不下降才算成功；没有真实实验前不报告任何提升比例。",
              size=10.5, color=GREY)

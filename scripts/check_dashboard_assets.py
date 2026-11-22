@@ -33,7 +33,7 @@ def pdf_pages(data: bytes) -> int:
 def top_grey_ratio(image: Image.Image) -> float:
     """Window chrome shows a light-grey band (#F3F3F3) at the top; clean pages are white.
 
-    Calibration: screenshots with the Power BI banner ≈ 0.71, rendered slides ≈ 0.05.
+    Calibration: window screenshots with an app banner ≈ 0.71, rendered slides ≈ 0.05.
     """
     strip = image.crop(CHROME_STRIP).convert("L")
     histogram = strip.histogram()

@@ -1,7 +1,7 @@
 """Render the three headline charts as dependency-free SVG files.
 
-The dashboard itself is Power BI; these SVGs only feed the README so a reader sees
-the key evidence without downloading the workbook.
+These SVGs only feed the README so a reader sees the key evidence without opening
+the dashboard deck.
 """
 
 from __future__ import annotations

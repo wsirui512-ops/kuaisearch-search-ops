@@ -9,7 +9,7 @@
   (for example a Chinese project folder), which surfaces as
   "ClassNotFoundException: org.apache.spark.deploy.SparkSubmit".
 
-  Requires Java 17+ on PATH or JAVA_HOME. No administrator rights, no Docker.
+  Requires Java 17+ on PATH or JAVA_HOME. No administrator rights needed.
 
 .EXAMPLE
   powershell -ExecutionPolicy Bypass -File scripts/setup_spark.ps1
