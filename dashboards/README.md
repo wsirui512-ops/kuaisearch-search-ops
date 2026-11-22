@@ -1,11 +1,21 @@
-# 看板交付
+# 看板目录
 
-| 文件 | 用途 |
+八页静态报告，全部由 `outputs_public/` 的聚合数据生成；改口径后重跑两条命令即可同步。
+
+| 文件 | 说明 |
 | --- | --- |
-| `kuaisearch-search-ops.pbix` | 本机 Power BI Desktop 八页报告：总览、条数效率、品类残差、需求标签、机会清单、标题审阅、相对时间、运营动作 |
-| `preview.html` | 可直接打开的静态业务预览，版式与 Power BI 报告分别维护 |
-| `data/kuaisearch_dashboard.xlsx` | 生成 `.pbix` 所用的工作簿，报告导入了其中 11 张数据表 |
+| `静态看板.pptx` | 八页报告源文件（可编辑，16:9） |
+| `看板.pdf` | 由 PPTX 渲染的 PDF，8 页 |
+| `images/page01–08.png` | 1600×900 截图，README 与 Release 使用 |
+| `preview.html` | 网页版静态看板，双击即可打开，无需安装软件 |
+| `data/kuaisearch_dashboard.xlsx` | 单文件聚合数据源（12 个 sheet），供二次分析或 Excel 查看 |
 
-`.pbix` 已在 Power BI Desktop 创建并保存，含聚合表及 Top 30 搜索词。文件被 `.gitignore` 排除，仅供本机审阅；确认数据再分发范围前，不上传 GitHub Release。八页 PDF 和 `images/page01..08.png` 已导出；第六页只展示二字覆盖率自动预筛，尚未人工抽检。项目边界见 [面试展示版](../docs/interview-release-v1.md)，搭建方法见 [Power BI 手册](../docs/powerbi.md)。
+## 重新生成
 
-若重新生成 `data/kuaisearch_dashboard.xlsx`，在 Power BI Desktop 内刷新并逐页核对指标；当前 `.pbix` 是截至 2026-11-21 的已保存快照。
+```powershell
+python scripts/build_static_dashboard.py   # 从 outputs_public 生成 PPTX
+python scripts/export_dashboard.py         # 渲染 8 张 PNG + PDF（PowerPoint COM）
+python scripts/check_dashboard_assets.py   # 校验页数、尺寸、空白页、应用界面条
+```
+
+`check_dashboard_assets.py` 退出码 0 才算可以发布；它会拦下空白页和带应用界面灰带的截图。

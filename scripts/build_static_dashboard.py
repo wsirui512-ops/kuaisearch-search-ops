@@ -212,11 +212,11 @@ def main() -> None:
               [i["intent"] for i in intents],
               [int(i["requests"]) for i in intents],
               "请求数", BLUE, '#,##0')
-    table(slide, Inches(7.4), Inches(1.5), Inches(5.3), [
+    table(slide, Inches(7.15), Inches(1.5), Inches(5.7), [
         ["标签", "平均条数", "商品CTR", "同条数差"],
-        *[[r["intent"][:8], f"{float(r['avg_list_length']):.1f}",
+        *[[r["intent"], f"{float(r['avg_list_length']):.1f}",
            f"{float(r['item_ctr'])*100:.2f}%", f"{float(r['gap_pp']):+.2f}pp"] for r in intent_res],
-    ], [Inches(1.9), Inches(1.1), Inches(1.1), Inches(1.2)], body_size=9)
+    ], [Inches(2.7), Inches(1.0), Inches(1.0), Inches(1.0)], body_size=8.5)
     text_box(slide, Inches(0.55), Inches(6.0), Inches(12.2), Inches(0.8),
              "读法：按同条数校准后，五类标签的残差都在 ±0.34pp 内；品牌/店铺词反而好 0.34pp。"
              "这不是「需求越明确越好」的证据，只是描述。", size=11.5, color=GREY)
@@ -255,12 +255,15 @@ def main() -> None:
     # 7 相对时间
     slide = prs.slides.add_slide(blank)
     page(slide, 7, "07 相对时间：20 个区间的量级波动（非日历日期）", "time_index 是相对编码，不能还原为日期、小时或星期；只用于看波动，不做星期/分时结论。")
-    bar_chart(slide, Inches(0.55), Inches(1.4), Inches(12.2), Inches(4.4),
+    bar_chart(slide, Inches(0.55), Inches(1.4), Inches(12.2), Inches(3.95),
               [r["time_bucket"] for r in relative],
               [int(r["requests"]) for r in relative],
               "请求数", RGBColor(0x7C, 0x9E, 0xF0), '#,##0')
-    text_box(slide, Inches(0.55), Inches(6.1), Inches(12.2), Inches(0.7),
-             "读法：各区间请求量在 2.6–3.0 万之间波动，没有明显趋势；商品点击率稳定在 3.7%–3.9%，"
+    text_box(slide, Inches(0.55), Inches(5.5), Inches(12.2), Inches(0.4),
+             "注：区间 19 只有 11,179 次请求，是因为训练段在 time_index 936,724 结束、该区间未走完，不是真实下滑。",
+             size=10.5, color=ORANGE)
+    text_box(slide, Inches(0.55), Inches(5.95), Inches(12.2), Inches(0.7),
+             "读法：除末段外，各区间请求量在 2.6–3.0 万之间波动，没有明显趋势；商品点击率稳定在 3.7%–3.9%，"
              "说明样本期内结构基本稳定。", size=11.5, color=GREY)
 
     # 8 运营动作
@@ -272,13 +275,13 @@ def main() -> None:
         ("C 属性补全", "补充机型/材质/季节/版型等标题属性", "目标商品CTR", "商家运营", "每臂约 15 万曝光"),
     ]
     for index, (name, what, metric, owner, size) in enumerate(actions):
-        top = Inches(1.45 + index * 1.75)
-        card = slide.shapes.add_shape(1, Inches(0.55), top, Inches(12.2), Inches(1.55))
+        top = Inches(1.45 + index * 1.72)
+        card = slide.shapes.add_shape(1, Inches(0.55), top, Inches(12.2), Inches(1.25))
         card.fill.solid(); card.fill.fore_color.rgb = LIGHT; card.line.color.rgb = RGBColor(0xE3, 0xE6, 0xEC)
-        text_box(slide, Inches(0.75), top + Inches(0.12), Inches(2.4), Inches(0.35), name, size=14, bold=True, color=BLUE)
-        text_box(slide, Inches(3.2), top + Inches(0.12), Inches(4.2), Inches(0.9), what, size=10.5)
-        text_box(slide, Inches(7.6), top + Inches(0.12), Inches(2.6), Inches(0.9), f"主指标：{metric}", size=10, color=GREY)
-        text_box(slide, Inches(10.4), top + Inches(0.12), Inches(2.2), Inches(0.9), f"{owner}\n{size}", size=10, color=GREY)
+        text_box(slide, Inches(0.75), top + Inches(0.18), Inches(2.4), Inches(0.4), name, size=15, bold=True, color=BLUE)
+        text_box(slide, Inches(3.2), top + Inches(0.18), Inches(4.0), Inches(0.9), what, size=11)
+        text_box(slide, Inches(7.5), top + Inches(0.18), Inches(2.7), Inches(0.9), f"主指标：{metric}", size=10.5, color=GREY)
+        text_box(slide, Inches(10.5), top + Inches(0.18), Inches(2.1), Inches(0.9), f"{owner}\n{size}", size=10.5, color=GREY)
     text_box(slide, Inches(0.55), Inches(6.75), Inches(12.2), Inches(0.3),
              "判读：主指标提升且护栏（请求点击率）不下降才算成功；没有真实实验前不报告任何提升比例。",
              size=10.5, color=GREY)

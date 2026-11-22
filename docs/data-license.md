@@ -23,7 +23,6 @@ MIT 允许复制、修改、再分发与商用，条件是**保留版权与许�
 | 原始 `data/raw/*.jsonl` | ❌ | 3.1 GB，且无必要再分发 |
 | `data/processed/*.duckdb`、`exports/*.parquet` | ❌ | 体积大，可由脚本重建 |
 | `outputs/`（含 query 全量与商品标题） | ❌ | 用户级/明细级内容，保持本地 |
-| `.pbix` | ⚠️ 建议不进仓库 | 含嵌入数据模型；放 Release 或网盘，README 说明获取方式 |
 
 ## 搜索词敏感性
 

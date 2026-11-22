@@ -9,7 +9,7 @@
 - KuaiSearch-Lite 固定版本四份 JSONL，SHA-256 校验。555,553 次搜索、102,086 名去重用户、17,800,904 条商品曝光、680,790 次曝光内点击。
 - Python 编排、DuckDB SQL 建立三层分析表与 39 项质量断言；`python run.py` 全量重建。本机一次实测约 40.3 秒，不作为跨机器性能承诺。
 - Spark 4.3 本地 `local[4]` 读取 Parquet 复算核心指标，与 DuckDB 一致。未处理官方 107 GB 全量，不做不公平的引擎速度比较。
-- `dashboards/preview.html` 是网页版静态看板；`dashboards/静态看板.pptx` 是八页报告源文件，导出 `看板.pdf` 与 8 张截图；`dashboards/data/kuaisearch_dashboard.xlsx` 是数据源。相对时间索引不是日历日期。Power BI `.pbix` 保留在本机但当前环境未安装 Power BI，未验证，不随仓库分发。ClickHouse 不再作为目标技术。
+- `dashboards/preview.html` 是网页版静态看板；`dashboards/静态看板.pptx` 是八页报告源文件，导出 `看板.pdf` 与 8 张截图；`dashboards/data/kuaisearch_dashboard.xlsx` 是数据源。相对时间索引不是日历日期。
 
 ## 三条可讲的发现
 
@@ -33,4 +33,4 @@
 
 > 基于 KuaiSearch-Lite 55.6 万次真实电商搜索，使用 Python 和 DuckDB SQL 构建请求级、曝光级分析表及质量校验；通过列表条数分层修正品类点击率对比，识别 124 个满足样本量门槛的待核查搜索需求；用 Spark 本地模式复算核心指标，与 DuckDB 完成跨引擎对账，并设计搜索结果页运营实验方案。
 
-八页静态报告已可演示；若要在简历写 Power BI，需先在有 Power BI 的机器上打开并导出一次，否则写“八页诊断报告（PPTX/PDF）”即可，不可声称完成线上实验或得到因果增量。
+八页静态报告已可演示；简历写“八页诊断报告（PPTX/PDF）”即可，不可声称完成线上实验或得到因果增量。
