@@ -107,6 +107,7 @@ python scripts/position_sensitivity.py    # 位置敏感性复核（条数 × �
 python scripts/export_parquet.py   # 导出 Parquet（ClickHouse 对账或免重建查询用）
 python scripts/build_dashboard_data.py    # Power BI 单文件数据源（需要 openpyxl）
 python scripts/build_dashboard_preview.py # 静态看板预览
+python scripts/check_dashboard_assets.py   # 校验 PDF/截图（发布前必跑）
 python scripts/make_charts.py      # 重新生成 README 图表
 ```
 
@@ -122,7 +123,7 @@ python scripts/make_charts.py      # 重新生成 README 图表
 已制作 Power BI Desktop 八页报告：总览 / 条数效率 / 品类残差 / 需求标签 / 机会清单 / 标题预筛 / 相对时间 / 运营动作。本机文件为 `dashboards/kuaisearch-search-ops.pbix`，其中含 Top 30 搜索词。`.pbix` 被 `.gitignore` 排除，克隆仓库不会获得它；确认数据许可和词级内容后，计划通过 GitHub Release 附件或网盘提供下载。搭建与口径见 [Power BI 手册](docs/powerbi.md)。
 
 - 先看 [静态看板](dashboards/preview.html)（双击打开，无需安装任何软件）；`docs-site/index.html` 是 GitHub Pages 准备稿。
-- [八页 PDF](dashboards/看板.pdf) 与下方截图来自本机 Power BI Desktop 导出，克隆仓库后可直接查看。
+- [八页 PDF](dashboards/看板.pdf) 与下方截图为本机看板导出物；重新导出后运行 `python scripts/check_dashboard_assets.py` 校验页数、尺寸、空白页与截图中的应用界面条。
 - 数据源：`dashboards/data/kuaisearch_dashboard.xlsx`（本版导入 11 张数据表；未导入年龄表）。
   
 ![列表条数效率页](dashboards/images/page02.png)
@@ -153,7 +154,8 @@ PDF 第 5 页含 Top 30 搜索词；示例词为样本中的高频泛词，公�
 | [路线图](docs/roadmap.md) | 阶段计划、当前进度与验收标准 |
 | [交接说明](docs/handoff-codex.md) | 给优化方的完整交接：结论、口径、文件地图、已知弱点与优化任务 |
 | [交付与审阅指南](docs/delivery-guide.md) | 本机成果清单、建议审阅顺序、发布边界与反馈重点 |
+| [数据许可](docs/data-license.md) | 数据集 MIT 核查记录、可发布清单、搜索词敏感性扫描 |
 
 ## 许可
 
-代码 MIT。原始数据版权与许可归数据集作者，本项目不再分发原始文件与用户级数据。
+代码 MIT。数据集 KuaiSearch-Lite 在 Hugging Face 标注为 MIT（核查记录见 [数据许可](docs/data-license.md)）；本项目不再分发原始文件与用户级数据。

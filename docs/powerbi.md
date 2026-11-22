@@ -1,4 +1,4 @@
-﻿# Power BI 看板搭建与交付说明
+# Power BI 看板搭建与交付说明
 
 > 当前本机已生成 `dashboards/kuaisearch-search-ops.pbix`：八页、11 张导入表，Power BI Desktop 实际保存。新增相对时间趋势与运营动作页；下文部分 DAX 与五页版式是后续优化方案，不能当作已完成内容。
 > `.pbix` 含 Top 30 搜索词，不含用户级明细；暂只在本机供审阅，不上传 GitHub Release。
@@ -148,10 +148,20 @@ dim_split = DATATABLE("split", STRING, {{"train"}, {"test"}})
 
 ## 6. 导出与入库
 
+导出前先做四件事，否则截图会带上应用界面、空页和默认字段名：
+
+1. **消除"自动恢复"横幅**：另存为新文件 → 关闭 Power BI → 重新打开该文件（不要点"查看已恢复文件"）。
+2. **切到阅读视图**：`视图 → 阅读视图`，关闭网格线；确认没有选中框（选中时会出现斜纹）。
+3. **改标题**：把 `item_ctr 的总和(按 length_stratum 和 split)` 这类默认标题改成业务标题（如"各列表长度段的商品点击率"）。
+4. **检查空页**：第 6 页当前只有一段小字，若保留需补一张"10 个词覆盖率"表，否则删除该页并重排页码。
+
+然后：
+
 1. `文件 → 导出 → 导出为 PDF`，命名 `dashboards/看板.pdf`。
-2. 每页 `视图 → 截图` 或 Windows 截图，存 `dashboards/images/page1.png` …（建议 1600×900）。
-3. 本机 `.pbix` 已保存到 `dashboards/kuaisearch-search-ops.pbix`。该文件含 Top 30 搜索词，**不要提交到 git 或上传 GitHub Release**；公开版本需先确认数据许可并审阅或脱敏词级内容。
-4. 在 README 里嵌 2–3 张关键页截图（不要贴 6 张）。
+2. 每页在**阅读视图**下截图，存 `dashboards/images/page01.png … page08.png`，统一 1600×900。
+3. 运行 `python scripts/check_dashboard_assets.py`：校验页数、尺寸、空白页，并检测 8 张截图是否带同一条应用界面栏；退出码 1 表示还不能发布。
+4. 本机 `.pbix` 已保存到 `dashboards/kuaisearch-search-ops.pbix`。该文件含 Top 30 搜索词，**不要提交到 git**；公开版本先确认许可（[数据许可](data-license.md)）并审阅词级内容。
+5. 在 README 里嵌 2–3 张关键页截图（不要贴 6 张）。
 
 ## 7. 常见坑
 

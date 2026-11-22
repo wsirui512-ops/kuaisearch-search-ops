@@ -1,4 +1,4 @@
-"""Publish aggregate spot-check results only after every manual judgment is filled."""
+﻿"""Publish aggregate spot-check results only after every manual judgment is filled."""
 import csv
 import re
 from collections import defaultdict
@@ -17,7 +17,9 @@ ATTR = [r"春秋|夏季|冬季|春夏|秋冬|加绒|加厚|薄款|新款|20\d{2}
 
 
 def main():
-    ws = load_workbook(SOURCE, read_only=True, data_only=False)["抽检表"]
+    ws = load_workbook(SOURCE, data_only=False)["抽检表"]
+    header = [cell.value for cell in ws[1]]
+    confirm_index = header.index("已核对（填 Y）") if "已核对（填 Y）" in header else None
     rows = list(ws.iter_rows(min_row=2, values_only=True))
     if len(rows) != 30:
         raise ValueError(f"Expected 30 rows, found {len(rows)}; no summary written")
@@ -30,6 +32,8 @@ def main():
             raise ValueError(f"Row {n}: invalid judgment {judgment!r}")
         if reason is None or not str(reason).strip():
             raise ValueError(f"Row {n}: 我的理由 is blank; no summary written")
+        if confirm_index is not None and str(row[confirm_index] or "").strip().upper() != "Y":
+            raise ValueError(f"Row {n}: 未勾选确认（L 列填 Y）；no summary written")
         if not query or not title:
             raise ValueError(f"Row {n}: query/title missing")
         groups[query].append((str(judgment).strip(), sum(bool(re.search(p, title)) for p in ATTR)))
