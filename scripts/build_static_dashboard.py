@@ -215,7 +215,7 @@ def main() -> None:
               [round(float(r["request_click_rate"]) * 100, 1) for r in strata],
               "请求点击率（%）", RGBColor(0x3A, 0xA9, 0x81), '0.0')
     text_box(slide, Inches(0.55), Inches(5.75), Inches(12.2), Inches(1.0),
-             "读法：商品点击率从 8.96% 降到 2.19%，而请求点击率从 36.6% 升到 84.1%。"
+             "观察：商品点击率从 8.96% 降到 2.19%，同期请求点击率从 36.6% 升到 84.1%——两条曲线方向相反。"
              "前者说明单件越来越难被点，后者说明用户仍能点到东西——两个结论不矛盾，因为分母不同。",
              size=11.5, color=GREY)
 
@@ -234,7 +234,7 @@ def main() -> None:
           for c in top_categories[:6]],
     ], [Inches(1.85), Inches(1.15), Inches(0.95), Inches(0.95)], body_size=8.5)
     text_box(slide, Inches(0.55), Inches(6.15), Inches(12.2), Inches(0.7),
-             "读法：女装缺口总量最大（曝光体量大），但每曝光只差 0.25pp；男鞋每曝光差 0.73pp，更值得先查。",
+             "排序：女装差额总量最大但单位曝光仅差 0.25pp；男鞋 0.73pp、箱包 0.46pp 更值得先查。",
              size=11.5, color=GREY)
 
     # 4 需求标签
@@ -250,7 +250,7 @@ def main() -> None:
            f"{float(r['item_ctr'])*100:.2f}%", f"{float(r['gap_pp']):+.2f}pp"] for r in intent_res],
     ], [Inches(2.7), Inches(1.0), Inches(1.0), Inches(1.0)], body_size=8.5)
     text_box(slide, Inches(0.55), Inches(6.0), Inches(12.2), Inches(0.8),
-             "读法：按同条数校准后，五类标签的残差都在 ±0.34pp 内；品牌/店铺词反而好 0.34pp。"
+             "判断：五类标签的残差都在 ±0.34pp 内，需求类型与商品点击率没有明显关联。"
              "这不是「需求越明确越好」的证据，只是描述。", size=11.5, color=GREY)
 
     # 5 机会清单
@@ -295,7 +295,7 @@ def main() -> None:
              "注：区间 19 只有 11,179 次请求，是因为训练段在 time_index 936,724 结束、该区间未走完，不是真实下滑。",
              size=10.5, color=ORANGE)
     text_box(slide, Inches(0.55), Inches(5.95), Inches(12.2), Inches(0.7),
-             "读法：除末段外，各区间请求量在 2.6–3.0 万之间波动，没有明显趋势；商品点击率稳定在 3.7%–3.9%，"
+             "口径：除末段外，各区间请求量在 2.6–3.0 万之间波动，没有明显趋势；商品点击率稳定在 3.7%–3.9%，"
              "说明样本期内结构基本稳定。", size=11.5, color=GREY)
 
     # 8 运营动作
