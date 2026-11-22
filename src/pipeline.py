@@ -2,9 +2,8 @@
 
 Design notes
 ------------
-* The database is built into ``.work/build.duckdb`` and only replaces the published
-  file after every SQL step and quality assertion passes. A failed run never leaves
-  the previous database deleted (the v1 pipeline removed it before connecting).
+* Database and CSVs are staged under .work. Publishing rolls back on ordinary
+  process errors; it does not promise cross-file atomicity during power loss.
 * Raw JSONL files stay outside git. Only reviewed aggregates are exported to
   ``outputs_public/``; the full query-level table stays in ``outputs/``.
 * Two denominators are never mixed: item CTR (clicks / exposures) and request click
@@ -28,6 +27,10 @@ DB = ROOT / "data" / "processed" / "kuaisearch.duckdb"
 BUILD_DB = ROOT / ".work" / "build.duckdb"
 OUT = ROOT / "outputs"
 PUBLIC = ROOT / "outputs_public"
+FINAL_OUT, FINAL_PUBLIC = OUT, PUBLIC
+# All exports are staged beside the database; publish only the completed bundle.
+OUT = ROOT / ".work" / "staged" / "outputs"
+PUBLIC = ROOT / ".work" / "staged" / "outputs_public"
 SQL_DIR = ROOT / "sql"
 INTENT_RULES = ROOT / "config" / "intent_rules.csv"
 
@@ -259,8 +262,11 @@ def main() -> None:
 
     DB.parent.mkdir(parents=True, exist_ok=True)
     BUILD_DB.parent.mkdir(parents=True, exist_ok=True)
-    OUT.mkdir(exist_ok=True)
-    PUBLIC.mkdir(exist_ok=True)
+    for folder in (OUT, PUBLIC):
+        if folder.exists():
+            assert folder.resolve().is_relative_to((ROOT / ".work").resolve())
+            shutil.rmtree(folder)
+        folder.mkdir(parents=True)
     if BUILD_DB.exists():
         BUILD_DB.unlink()
 
@@ -336,7 +342,11 @@ def main() -> None:
     finally:
         conn.close()
 
-    os.replace(BUILD_DB, DB)
+    from publish import publish_bundle
+    pairs = [(p, FINAL_OUT / p.name) for p in sorted(OUT.iterdir())]
+    pairs += [(p, FINAL_PUBLIC / p.name) for p in sorted(PUBLIC.iterdir())]
+    pairs.append((BUILD_DB, DB))
+    publish_bundle(pairs, ROOT / ".work")
     print(f"Built {DB} and {len(EXPORTS) + 1} aggregate exports", flush=True)
 
 

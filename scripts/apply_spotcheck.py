@@ -1,5 +1,6 @@
 ﻿"""Publish aggregate spot-check results only after every manual judgment is filled."""
 import csv
+import json
 import re
 from collections import defaultdict
 from pathlib import Path
@@ -17,13 +18,32 @@ ATTR = [r"春秋|夏季|冬季|春夏|秋冬|加绒|加厚|薄款|新款|20\d{2}
 
 
 def main():
+    confirmation = ROOT / "outputs/reviewer_confirmation.json"
+    if not confirmation.exists():
+        raise ValueError("Missing author confirmation: outputs/reviewer_confirmation.json; no summary written")
+    provenance = json.loads(confirmation.read_text(encoding="utf-8"))
+    if not provenance.get("reviewer") or not provenance.get("reviewed_at") or provenance.get("personally_reviewed_all_30") is not True:
+        raise ValueError("Author must confirm all 30 rows personally; no summary written")
     ws = load_workbook(SOURCE, data_only=False)["抽检表"]
     header = [cell.value for cell in ws[1]]
-    confirm_index = header.index("已核对（填 Y）") if "已核对（填 Y）" in header else None
+    if "已核对（填 Y）" not in header:
+        raise ValueError("Missing mandatory confirmation column")
+    confirm_index = header.index("已核对（填 Y）")
     rows = list(ws.iter_rows(min_row=2, values_only=True))
     if len(rows) != 30:
         raise ValueError(f"Expected 30 rows, found {len(rows)}; no summary written")
     groups = defaultdict(list)
+    with (ROOT / 'outputs/review_table.csv').open(encoding='utf-8-sig', newline='') as stream:
+        source_rows = list(csv.DictReader(stream))
+    expected = []
+    for query in dict.fromkeys(r['query'] for r in source_rows):
+        candidates = sorted([r for r in source_rows if r['query']==query], key=lambda r:(-int(r['exposures']),int(r['item_id'])))
+        if len(candidates)<10:raise ValueError('Review source has fewer than ten products per query')
+        expected.extend(candidates[i] for i in (0,4,9))
+    actual_keys = [(r[0],r[1],int(r[4]),int(r[5])) for r in rows]
+    expected_keys = [(r['query'],r['item_title'],int(r['exposures']),int(r['clicks'])) for r in expected]
+    if actual_keys != expected_keys:
+        raise ValueError('Workbook rows do not match exposure ranks 1/5/10; no summary written')
     for n, row in enumerate(rows, 2):
         query, title, judgment, reason = row[0], row[1], row[7], row[8]
         if judgment is None or str(judgment).strip() == "":

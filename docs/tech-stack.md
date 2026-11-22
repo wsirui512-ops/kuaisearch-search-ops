@@ -38,8 +38,8 @@
 
 八页报告由 `scripts/build_static_dashboard.py` 从 `outputs_public/` 生成 PPTX，再由 `scripts/export_dashboard.py` 渲染成 PNG 与 PDF。这样做的好处：
 
-- 数字直接来自聚合结果，和报告、CSV 完全同步；
-- 改一个指标只需要重跑两条命令，不依赖任何商业软件；
+- 表格数字来自聚合结果；报告、PPTX与网页的关键表格由校验脚本交叉检查；
+- Python可生成PPTX；PNG/PDF渲染需要Windows、已安装Microsoft PowerPoint及pywin32。跨平台可查看现成图或重建HTML；
 - 仓库里能直接看到 PDF 和截图，面试官不必安装软件。
 
 代价：没有交互筛选。网页版 `dashboards/preview.html` 提供可点击的补充视图。
@@ -49,7 +49,7 @@
 | 约束 | 做法 |
 | --- | --- |
 | 导出可复现 | 浮点保留 10 位有效数字 + 稳定排序键；两次重建 14 个 CSV 哈希一致 |
-| 管道安全 | 先建临时库，全部断言通过后才替换正式库；失败不删旧库 |
+| 管道安全 | 数据库和CSV一起暂存，普通发布异常回滚旧文件；断电不承诺跨文件原子性 |
 | 数据质量 | 39 项对账指标，其中 13 项为强制断言（请求=会话、曝光=求和、位置越界 0、意图覆盖 100%） |
 | 跨引擎一致 | DuckDB(库) / DuckDB(Parquet) / 纯 Python / Spark 四路对账 |
 | 发布边界 | 原始数据、DuckDB、Parquet、query 明细不发布；聚合结果可发布 |

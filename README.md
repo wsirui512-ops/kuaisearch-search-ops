@@ -5,14 +5,12 @@
 > 555,553 次真实搜索 · 17,800,904 次商品曝光 · 102,086 名用户 · 278,615 个去重搜索词  
 > 数据来源：[KuaiSearch-Lite](https://huggingface.co/datasets/benchen4395/KuaiSearch)（2025 年 6 月后的快手电商搜索行为样本，Lite 为采样数据）
 
-> 定位：个人分析作品，按省级数据运营竞赛的评审维度自检——选题价值、数据与方法、分析深度、结论边界、运营落地、呈现与复现。
-
 ## 30 秒结论
 
 **列表条数是解释商品点击率差异的重要分层变量。**当前数据支持描述性诊断，尚不能确定低点击的原因。
 
 - 6.9% 的请求单次展示 100 条以上商品，贡献 **40.3% 的曝光**；该组商品点击率 2.19%，请求点击率 84.1%。
-- 按同条数基准校准后，女装差距由 0.78pp 收窄至 **0.25pp**，男鞋仍有 **0.73pp**，品类排序发生反转。
+- 按同条数基准校准后，女装差距由 0.78pp 收窄至 **0.25pp**，男鞋仍有 **0.73pp**；男鞋在校准前后都低于女装。
 - **124 个搜索词**进入待核查清单，Top 30 的描述性差额约 **6,416 次点击**（约为其曝光的 1.0%）；测试段 86 个候选中有 55 个方向一致。
 
 ![结果条数与商品点击率](docs/images/chart_length_ctr.svg)
@@ -38,21 +36,21 @@
 | 通过样本门槛且存在正缺口的搜索词 | 124 个 |
 | Top 30 缺口点击 | ~6,416 次 / 64.6 万曝光（~1.0%） |
 
-## 已完成的验证（作者抽检 30 条：26/4/0）
+## 已完成的验证
 
 - **质量断言**：39 项对账指标，其中 13 项为强制断言（请求=会话、曝光=求和、位置越界 0、意图覆盖 100%），任一失败 `run.py` 中止且不覆盖旧库。
 - **三路对账**：同一批数字用 DuckDB(库) / DuckDB(Parquet) / 纯 Python(聚合 CSV) 各算一遍，5 个核心指标全部一致（`outputs_public/engine_check.json`）。
-- **确定性导出**：导出统一保留 10 位有效数字并加稳定排序键，连续两次全量重建的 14 个公开 CSV 哈希完全一致（耗时类字段除外）。
+- **确定性导出**：导出统一保留 10 位有效数字并加稳定排序键，连续两次全量重建的 17 个公开 CSV 哈希完全一致（耗时类字段除外）。
 - **位置敏感性**：把召回列表中的位置也放进基准（条数 × 位置两层）后，Top 30 的描述性缺口变化最大 0.009pp（`outputs_public/sensitivity_position.csv`）。
 - **第四引擎（Spark）**：Apache Spark 4.3.0 本地模式复算同一批指标，结果与 DuckDB 完全一致（`outputs_public/spark_check.json`）；启动 5.7s、聚合 4.1s/4.6s。
-- **测试段复核**：124 个候选里 86 个测试曝光足够，其中 55 个方向一致（64%）、31 个未复现；所以这 124 个是筛查清单，不是已确认结论。
-- **商品标题抽检**：30 条中 26 条相关、4 条部分相关、0 条明显不相关；4 条集中在"学生党"人群与属性信息缺失。这批样本按曝光量取、不覆盖低点击商品，因此只能说明"没有明显错品类"，不能判断低点击原因。
+- **测试段复核**：124 个候选里86个测试曝光足够；相对测试期自身基准55个同向，冻结训练基准57个同向。两种参照不混用，见 `outputs_public/validation_baselines.csv`。
+- **标题预筛**：100 行高曝光标题的二字覆盖率已计算。既有30条标注来源待作者确认，暂不作为人工证据。
 - **看板**：八页静态报告（`dashboards/静态看板.pptx` 源文件 + `看板.pdf` + 8 张 1600×900 截图），另有可点击的网页预览。
 
 ## 方法：先校准口径，再谈机会
 
 1. **两个分母严格分开**：商品点击率（点击/曝光）≠ 请求点击率（有点击的请求/请求）。
-2. **按结果条数分层**：同一份数据，列表越长单件越难被点，用"同条数段期望点击"当基准，算残差而不是直接比总体。
+2. **按结果条数分层**：条数分组下的商品点击率差异明显，用同条数段期望点击作参照，比较残差。
 3. **需求标签规则化**：品牌/店铺、品类+修饰、纯品类、属性/场景、无品类信号，规则在 `config/intent_rules.csv`，可审计、可替换。
 4. **机会表附探索性统计列**：Wilson 区间 + 双比例检验 + BH-FDR；测试段只做方向复核（时间外，不是 A/B）。
 5. **动作带实验设计**：每个动作有主指标、护栏指标、最小样本量（[实验方案](docs/experiment-design.md)）。
@@ -70,31 +68,50 @@
 │   ├── 03_marts.sql            # 总览、条数分层、类目、需求、机会、时间、年龄
 │   └── 04_quality.sql          # 对账断言（任一失败即中止）
 ├── src/
-│   ├── pipeline.py             # 临时库构建 + 原子替换 + 导出
+│   ├── pipeline.py             # 数据库与 CSV 暂存 + 发布异常回滚
+│   ├── publish.py              # 产物替换与回滚（暂存目录、失败还原）
 │   └── stats.py                # Wilson / 双比例检验 / BH-FDR
-├── config/intent_rules.csv     # 需求标签规则
+├── config/
+│   ├── intent_rules.csv        # 需求标签规则
+│   └── experiments.json        # 实验基线、MDE、owner 与动作
 ├── scripts/
 │   ├── download_data.py        # 官方文件下载 + SHA-256 校验
-│   ├── export_parquet.py       # 导出 fact/sessions 到 Parquet（跨引擎对账用）
+│   ├── export_parquet.py       # 导出 fact/sessions 到 Parquet
 │   ├── verify_engines.py       # 三路对账 + 耗时，写 engine_check.json
 │   ├── spark_check.py          # Spark 本地模式复算 + 与 DuckDB 对账
 │   ├── position_sensitivity.py # 条数 × 位置双层基准的敏感性复核
-│   ├── build_static_dashboard.py # 生成八页看板源文件（PPTX）
-│   ├── export_dashboard.py     # 渲染 8 张 PNG + PDF（PowerPoint COM）
-│   ├── check_dashboard_assets.py # 校验页数、尺寸、空白页、应用界面条
+│   ├── build_method_checks.py  # 两种测试基准与校准前后对比
+│   ├── build_report.py         # 从聚合表重建报告表格
 │   ├── build_review.py         # Top 10 词 × 10 商品审阅表
 │   ├── make_spotcheck.py       # 30 行抽检表（已填则跳过）
 │   ├── apply_spotcheck.py      # 人工确认后生成聚合结果
+│   ├── build_static_dashboard.py # 生成八页看板源文件（PPTX）
+│   ├── export_dashboard.py     # 渲染 8 张 PNG + PDF（PowerPoint COM）
+│   ├── dashboard_contract.py   # 看板产物与输入哈希绑定
+│   ├── check_dashboard_assets.py # 校验页数、尺寸、空白页、应用界面条
 │   ├── build_dashboard_preview.py # 网页版静态看板
 │   └── make_charts.py          # README 图表（无第三方依赖）
+├── tests/                      # 发布回滚与产物契约回归测试
+├── dashboards/                 # 静态看板.pptx、看板.pdf、8 张截图、manifest.json
 ├── outputs/                    # 本地全量（含 query 明细与商品标题，不发布）
-├── outputs_public/             # 可公开的聚合结果 + 对账 JSON
+├── outputs_public/             # 可公开聚合结果与对账 JSON（17 个 CSV）
 ├── exports/                    # Parquet 中间产物（不发布）
-├── dashboards/                 # 八页报告源文件、PDF、截图、网页预览
 └── docs/                       # 报告、口径、字典、证据、实验、技术栈、面试
 ```
 
 ## 快速开始
+
+| 目标 | 前置条件 | 命令与耗时范围 |
+| --- | --- | --- |
+| 看第一张图 | 无需安装 | 打开 `dashboards/images/page01.png` 或 `dashboards/preview.html`，立即可看 |
+| 只重建网页/SVG | Python 3.13，标准库 | `python scripts/make_charts.py` 和 `python scripts/build_dashboard_preview.py`；秒级 |
+| 重算聚合数据 | 安装 requirements；下载约3.1GB固定revision数据 | 以下命令；本机历史重建约40秒，下载/安装耗时依网络，未承诺新机30分钟 |
+| 重建八页PPTX | Python + python-pptx | `python scripts/build_static_dashboard.py` |
+| 重建PNG/PDF | Windows + 已安装Microsoft PowerPoint + pywin32 | `python scripts/export_dashboard.py`；其他平台用已提交预览 |
+
+完整校验：`powershell -ExecutionPolicy Bypass -File scripts/check_all.ps1 -SkipBuild`。
+无PowerPoint时显式加`-SkipRender`，仍校验现有PNG/PDF；不会声称本机已重新渲染。
+
 
 ```powershell
 python -m pip install -r requirements.txt
@@ -108,7 +125,9 @@ python scripts/build_static_dashboard.py    # 生成八页 PPTX
 python scripts/export_dashboard.py          # 渲染 PNG + PDF
 python scripts/check_dashboard_assets.py    # 校验看板产物（发布前必跑）
 python scripts/build_dashboard_preview.py   # 网页版静态看板
-python scripts/apply_spotcheck.py           # 抽检确认后生成聚合结果
+python scripts/build_method_checks.py       # 两种测试基准 + 校准前后比较
+python scripts/build_report.py              # 从聚合表重建报告表格
+# 人工确认流程见 docs/evidence-review.md；未确认不运行汇总
 ```
 
 运行后：

@@ -128,7 +128,7 @@ def main() -> None:
 
     top = read_csv("opportunities_top30.csv")[:10]
     horizontal_bars(
-        [(row["query"], float(row["gap_pp"]), f"({int(float(row['gap_clicks']))} 次)") for row in top],
+        [(row["query"], float(row["gap_pp"]), f"({float(row['gap_clicks']):.0f} 次)") for row in top],
         "同条数基准下点击缺口最大的 10 个搜索词",
         "训练段：实际商品点击率低于同条数期望的百分点（括号内为描述性缺口点击）",
         "chart_top_gap.svg",
@@ -137,7 +137,7 @@ def main() -> None:
 
     categories = read_csv("category_residuals.csv")[:8]
     horizontal_bars(
-        [(row["category"], float(row["gap_pp"]), f"({int(float(row['gap_clicks']))} 次)") for row in categories],
+        [(row["category"], float(row["gap_pp"]), f"({float(row['gap_clicks']):.0f} 次)") for row in categories],
         "一级类目：按曝光结构校准后的点击缺口",
         "训练段：实际商品点击率与同条数期望之差（百分点）",
         "chart_category_gap.svg",

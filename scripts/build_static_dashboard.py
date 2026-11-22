@@ -2,13 +2,18 @@
 
 The deck is the publishable, reproducible visual: numbers come straight from
 outputs_public, so any metric change flows through two commands.
-Exported to 1600x900 PNG and PDF by scripts/export_dashboard.ps1.
+Exported to 1600x900 PNG and PDF by scripts/export_dashboard.py.
 """
 
 from __future__ import annotations
 
 import csv
+import sys
 from pathlib import Path
+from experiment_contract import ACTIONS
+
+sys.path.insert(0, str(Path(__file__).resolve().parents[1] / ".localdeps"))
+sys.path.insert(0, str(Path(__file__).resolve().parents[1] / ".deps"))
 
 from pptx import Presentation
 from pptx.chart.data import CategoryChartData
@@ -205,7 +210,7 @@ def main() -> None:
 
     # 2 条数效率
     slide = prs.slides.add_slide(blank)
-    page(slide, 2, "02 条数效率：列表越长，单件越难被点", "训练段；不同请求的展示条数不同。两种点击率放在同一张图上时看的是形状，不是数值高低。")
+    page(slide, 2, "02 条数效率：分开比较两种点击率", "训练段；按每次请求的曝光条数分组。分组差异不代表增加列表长度的效果。")
     bar_chart(slide, Inches(0.55), Inches(1.4), Inches(6.3), Inches(4.2),
               [r["length_stratum"] for r in strata],
               [round(float(r["item_ctr"]) * 100, 3) for r in strata],
@@ -228,13 +233,13 @@ def main() -> None:
                [round(float(c["gap_pp"]), 3) for c in reversed(top_categories)],
                "缺口（百分点）", ORANGE, '0.00')
     table(slide, Inches(8.0), Inches(1.5), Inches(4.8), [
-        ["类目", "曝光", "实际", "期望"],
-        *[[c["category"][:5], f"{int(c['exposures']):,}",
-           f"{float(c['item_ctr'])*100:.2f}%", f"{float(c['expected_ctr'])*100:.2f}%"]
+        ["类目", "实际CTR", "总体差", "分层差"],
+        *[[c["category"][:5], f"{float(c['item_ctr'])*100:.2f}%",
+           f"{(float(train['item_ctr'])-float(c['item_ctr']))*100:.2f}pp", f"{float(c['gap_pp']):.2f}pp"]
           for c in top_categories[:6]],
     ], [Inches(1.85), Inches(1.15), Inches(0.95), Inches(0.95)], body_size=8.5)
     text_box(slide, Inches(0.55), Inches(6.15), Inches(12.2), Inches(0.7),
-             "排序：女装差额总量最大但单位曝光仅差 0.25pp；男鞋 0.73pp、箱包 0.46pp 更值得先查。",
+             "比较：女装由总体差 0.78pp 收窄到分层差 0.25pp；男鞋在两种比较中都低于女装。总量与单位差距分开用于排查。",
              size=11.5, color=GREY)
 
     # 4 需求标签
@@ -250,8 +255,8 @@ def main() -> None:
            f"{float(r['item_ctr'])*100:.2f}%", f"{float(r['gap_pp']):+.2f}pp"] for r in intent_res],
     ], [Inches(2.7), Inches(1.0), Inches(1.0), Inches(1.0)], body_size=8.5)
     text_box(slide, Inches(0.55), Inches(6.0), Inches(12.2), Inches(0.8),
-             "判断：五类标签的残差都在 ±0.34pp 内，需求类型与商品点击率没有明显关联。"
-             "这不是「需求越明确越好」的证据，只是描述。", size=11.5, color=GREY)
+             "观察：五类标签的残差范围为 −0.34pp 至 +0.20pp；未检验业务等效性，不能据此认定没有关联。"
+             "先核查规则标签，再决定是否按标签配置入口。", size=11.5, color=GREY)
 
     # 5 机会清单
     slide = prs.slides.add_slide(blank)
@@ -261,7 +266,7 @@ def main() -> None:
         ["#", "搜索词", "请求", "曝光", "实际CTR", "期望CTR", "差距", "缺口点击", "校验"],
         *[[r["rank"], MASK.get(r["query"], r["query"]), f"{int(r['requests']):,}", f"{int(r['exposures']):,}",
            f"{float(r['item_ctr'])*100:.2f}%", f"{float(r['expected_ctr'])*100:.2f}%",
-           f"{float(r['gap_pp']):.2f}pp", f"{int(float(r['gap_clicks'])):,}", r["validation"]]
+           f"{float(r['gap_pp']):.2f}pp", f"{float(r['gap_clicks']):,.0f}", r["validation"]]
           for r in top15],
     ], [Inches(0.5), Inches(3.2), Inches(0.9), Inches(1.2), Inches(1.1), Inches(1.1), Inches(1.0), Inches(1.3), Inches(1.9)],
         body_size=8.5, row_height=Inches(0.32))
@@ -271,7 +276,7 @@ def main() -> None:
 
     # 6 标题预筛
     slide = prs.slides.add_slide(blank)
-    page(slide, 6, "06 标题预筛：二字覆盖率（自动，未人工抽检）", "每个词取曝光最高的 10 件商品，计算 query 的二字片段出现在标题中的比例。覆盖率低≠不相关。")
+    page(slide, 6, "06 标题预筛：二字覆盖率与待核查样本", "每个词取曝光最高的 10 件商品；覆盖率低≠不相关。既有 30 条标注来源待作者确认。")
     table(slide, Inches(0.55), Inches(1.4), Inches(7.4), [
         ["搜索词", "商品数", "平均覆盖率", "零覆盖占比"],
         *[[MASK.get(r["query"], r["query"]), r["items_reviewed"], f"{float(r['avg_bigram_coverage']):.2f}",
@@ -282,7 +287,8 @@ def main() -> None:
              "• 「衣服」「鞋子」覆盖率低，是因为标题写的是卫衣、板鞋、面包鞋；\n"
              "• 「外套」「裤子」「手机壳」覆盖 100%，词本身就出现在标题里；\n\n"
              "这张表只用于筛出值得人工看的样本，不能得出「X% 商品不相关」。"
-             "人工抽检 30 条的结果单独记录，不在此页。", size=11, color=NAVY)
+             "既有标注统计为 26/4/0：部分相关分布在鞋子 1 条、长尾泛词 A 3 条；"
+             "来源待作者确认，不作为人工证据。", size=11, color=NAVY)
 
     # 7 相对时间
     slide = prs.slides.add_slide(blank)
@@ -296,16 +302,12 @@ def main() -> None:
              size=10.5, color=ORANGE)
     text_box(slide, Inches(0.55), Inches(5.95), Inches(12.2), Inches(0.7),
              "口径：除末段外，各区间请求量在 2.6–3.0 万之间波动，没有明显趋势；商品点击率稳定在 3.7%–3.9%，"
-             "说明样本期内结构基本稳定。", size=11.5, color=GREY)
+             "这些总体指标不足以判断词级排名或用户结构稳定。", size=11.5, color=GREY)
 
     # 8 运营动作
     slide = prs.slides.add_slide(blank)
-    page(slide, 8, "08 运营动作：三个可验证的实验", "没有线上实验，以下为方案；主指标优先用请求点击率，商品点击率为辅助诊断。")
-    actions = [
-        ("A 结果分区", "同批商品按细类目分组展示，不减少商品数", "请求点击率（护栏）＋同条数段商品CTR", "搜索运营 + 产品", "每臂约 15 万曝光"),
-        ("B 细意图入口", "泛词顶部提供细分入口（女鞋/男鞋/运动鞋）", "入口点击率、分支页面商品CTR", "搜索运营", "每臂约 4,300 请求"),
-        ("C 属性补全", "补充机型/材质/季节/版型等标题属性", "目标商品CTR", "商家运营", "每臂约 15 万曝光"),
-    ]
+    page(slide, 8, "08 运营动作：按用户分流、分批验证", "三项分开实验；主指标为每用户首次合格搜索点击率。后续请求用于辅助诊断。")
+    actions = ACTIONS
     for index, (name, what, metric, owner, size) in enumerate(actions):
         top = Inches(1.45 + index * 1.72)
         card = slide.shapes.add_shape(1, Inches(0.55), top, Inches(12.2), Inches(1.25))
@@ -315,7 +317,7 @@ def main() -> None:
         text_box(slide, Inches(7.5), top, Inches(2.7), Inches(1.25), f"主指标：{metric}", size=10.5, color=GREY, anchor=MSO_ANCHOR.MIDDLE)
         text_box(slide, Inches(10.5), top, Inches(2.1), Inches(1.25), f"{owner}\n{size}", size=10.5, color=GREY, anchor=MSO_ANCHOR.MIDDLE)
     text_box(slide, Inches(0.55), Inches(6.75), Inches(12.2), Inches(0.3),
-             "判读：主指标提升且护栏（请求点击率）不下降才算成功；没有真实实验前不报告任何提升比例。",
+             "规划：基线53%、MDE3pp、双侧α=0.05、power=80%；最终样本取主指标与护栏要求最大值，线上预观察后锁定。",
              size=10.5, color=GREY)
 
     prs.save(TARGET)

@@ -13,6 +13,7 @@ import sys
 from pathlib import Path
 
 from PIL import Image, ImageStat
+from dashboard_contract import verify_manifest
 
 ROOT = Path(__file__).resolve().parents[1]
 IMAGES = ROOT / "dashboards" / "images"
@@ -42,6 +43,7 @@ def top_grey_ratio(image: Image.Image) -> float:
 
 
 def main() -> None:
+    verify_manifest()
     problems: list[str] = []
     warnings: list[str] = []
 

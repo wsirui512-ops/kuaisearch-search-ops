@@ -21,6 +21,9 @@
 | `sensitivity_position.csv` | 条数 × 位置双层基准下 Top 30 的缺口变化 | 缺口几乎不变（≤0.009pp），说明结论对位置分层不敏感；不能排除排序与浏览行为 |
 | `spark_check.json` | Spark 本地模式复算结果、耗时与对账状态 | 第四引擎对账 |
 | `quality.json` | 质量审计结果 | 数据可信度 |
+| `category_comparison.csv` | 曝光≥10万的类目总体差与分层差 | 校准前后比较 |
+| `validation_baselines.csv` | 两种测试参照的候选/同向计数 | 区分测试自身基准与冻结训练基准 |
+| `opportunity_triage_top30.csv` | 仅Top30词的双参照复核分层 | 安排每周排查任务 |
 
 重新生成：`python run.py`（会同时重建 `outputs/` 本地全量与 `data/processed/kuaisearch.duckdb`）。
 

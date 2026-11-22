@@ -3,7 +3,7 @@ duckdb==2.0.0
 openpyxl>=3.1
 python-pptx>=1.0
 Pillow>=10
-# Windows 上渲染 PPTX 需要；其他平台脚本会跳过
+# PNG/PDF 重建需要 Windows + 已安装 Microsoft PowerPoint；其他平台只生成 PPTX/HTML
 pywin32>=306; sys_platform == "win32"
 # 可选：跨引擎对账（约 300 MB，按需安装）
 # pyspark==4.3.0

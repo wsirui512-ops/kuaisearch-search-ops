@@ -12,6 +12,8 @@ from __future__ import annotations
 import os
 import shutil
 import sys
+import uuid
+import gc
 from pathlib import Path
 
 from PIL import Image
@@ -33,7 +35,7 @@ def _powerpoint():
     import win32com.client
 
     pythoncom.CoInitialize()
-    return win32com.client.Dispatch("PowerPoint.Application")
+    return win32com.client.DispatchEx("PowerPoint.Application")
 
 
 def export_png() -> list[Path]:
@@ -65,25 +67,33 @@ def export_pdf() -> None:
 
 
 def main() -> None:
-    if hasattr(os, "add_dll_directory"):
+    if sys.platform != "win32":
+        raise SystemExit("Rendering needs Windows + installed Microsoft PowerPoint. Use committed HTML/PNG/PDF on other platforms.")
+    if hasattr(os, "add_dll_directory") and (DEPS / "pywin32_system32").exists():
         os.add_dll_directory(str(DEPS / "pywin32_system32"))
     slides = export_png()
-
-    IMAGES.mkdir(parents=True, exist_ok=True)
+    stage = TEMP / ("bundle-" + uuid.uuid4().hex)
+    stage.mkdir()
+    pairs = []
     for index, slide in enumerate(slides, start=1):
-        target = IMAGES / f"page{index:02d}.png"
+        target = stage / f"page{index:02d}.png"
         shutil.copyfile(slide, target)
         with Image.open(target) as image:
             if image.size != SIZE:
                 raise SystemExit(f"{target.name}: unexpected size {image.size}")
-        print(f"slide {index} -> {target.relative_to(ROOT)}")
-
-    try:
-        export_pdf()
-    except Exception as error:  # PowerPoint occasionally fails on SaveAs; assemble from PNGs
-        print(f"PowerPoint PDF export failed ({error}); building PDF from PNGs")
-        pages = [Image.open(IMAGES / f"page{index:02d}.png").convert("RGB") for index in range(1, 9)]
-        pages[0].save(PDF, save_all=True, append_images=pages[1:], resolution=150.0)
+        pairs.append((target, IMAGES / target.name))
+    pages = [Image.open(p).convert("RGB") for p,_ in pairs]
+    staged_pdf = stage / PDF.name
+    with staged_pdf.open('wb') as stream:
+        pages[0].save(stream, format='PDF', save_all=True, append_images=pages[1:], resolution=150.0)
+    for page in pages:
+        page.close()
+    gc.collect()
+    sys.path.insert(0, str(ROOT / "src"))
+    from publish import publish_bundle
+    publish_bundle(pairs + [(staged_pdf, PDF)], ROOT / ".work")
+    from dashboard_contract import write_manifest
+    write_manifest()
     print(f"PDF: {PDF.relative_to(ROOT)} ({PDF.stat().st_size / 1e6:.2f} MB)")
 
 

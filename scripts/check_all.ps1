@@ -14,7 +14,7 @@
   powershell -ExecutionPolicy Bypass -File scripts/check_all.ps1
   powershell -ExecutionPolicy Bypass -File scripts/check_all.ps1 -SkipBuild
 #>
-param([switch]$SkipBuild)
+param([switch]$SkipBuild, [switch]$SkipRender)
 
 $ErrorActionPreference = "Stop"
 $root = Split-Path -Parent $PSScriptRoot
@@ -35,13 +35,22 @@ if (-not $SkipBuild) {
 Invoke-Step "export parquet" { & $python scripts/export_parquet.py }
 Invoke-Step "three-way reconciliation" { & $python scripts/verify_engines.py }
 Invoke-Step "position sensitivity" { & $python scripts/position_sensitivity.py }
+Invoke-Step "method checks" { & $python scripts/build_method_checks.py }
+Invoke-Step "report tables" { & $python scripts/build_report.py }
 Invoke-Step "review table" { & $python scripts/build_review.py }
 Invoke-Step "README charts" { & $python scripts/make_charts.py }
 Invoke-Step "dashboard deck" { & $python scripts/build_static_dashboard.py }
-Invoke-Step "dashboard render" { & $python scripts/export_dashboard.py }
+if (-not $SkipRender) {
+    Invoke-Step "dashboard render (Windows + PowerPoint)" { & $python scripts/export_dashboard.py }
+} else {
+    Write-Host "Render skipped explicitly: validating existing PNG/PDF" -ForegroundColor Yellow
+}
 Invoke-Step "dashboard assets" { & $python scripts/check_dashboard_assets.py }
 Invoke-Step "dashboard preview" { & $python scripts/build_dashboard_preview.py }
+Copy-Item "dashboards/preview.html" "docs/index.html" -Force
+Copy-Item "dashboards/preview.html" "docs-site/index.html" -Force
 Invoke-Step "verify report figures" { & $python scripts/verify_docs.py }
+Invoke-Step "release safety regressions" { & $python -m unittest discover -s tests }
 
 & $python -c "import openpyxl" 2>$null
 if ($LASTEXITCODE -eq 0) {

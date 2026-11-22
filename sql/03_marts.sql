@@ -49,6 +49,7 @@ WHERE split = 'train'
 GROUP BY length_stratum;
 
 CREATE TABLE stratum_baseline_test AS
+-- Test-period relative-performance reference, distinct from frozen train validation.
 SELECT
   length_stratum,
   sum(impressions) AS exposures,

@@ -10,6 +10,7 @@ from __future__ import annotations
 import csv
 import html
 from pathlib import Path
+from experiment_contract import ACTIONS
 
 ROOT = Path(__file__).resolve().parents[1]
 PUBLIC = ROOT / "outputs_public"
@@ -37,7 +38,7 @@ def fmt_pct(value: str | float, digits: int = 2) -> str:
 
 
 def fmt_int(value: str | float) -> str:
-    return f"{int(float(value)):,}"
+    return f"{float(value):,.0f}"
 
 
 def vbars(rows: list[tuple[str, float]], width: int = 640, height: int = 300,
@@ -271,7 +272,7 @@ def main() -> None:
     )
     page6 = f"""
     <section id="page6" class="page">
-      <h2>6 · 标题预筛（自动，未人工抽检）</h2>
+      <h2>6 · 标题预筛与待核查样本</h2>
       <p class="lede">每个词取曝光最高的 10 件商品，计算 query 的二字片段出现在标题中的比例。覆盖率低不等于不相关。</p>
       <div class="split">
         <div class="card">
@@ -282,17 +283,13 @@ def main() -> None:
         <div class="card">
           <h3>怎么读</h3>
           <p class="note">「衣服」「鞋子」覆盖率低，是因为标题写的是卫衣、板鞋、面包鞋；「外套」「裤子」「手机壳」覆盖 100%，词本身就出现在标题里。</p>
-          <p class="note">这张表只用于筛出值得人工看的样本，不能得出「X% 商品不相关」。30 条人工抽检结果（26/4/0）单独记录。</p>
+          <p class="note">既有30条标注计数为26/4/0，其中鞋子1条部分相关、长尾泛词A 3条部分相关。来源待作者确认，不作为人工证据；覆盖率用于安排核查。</p>
         </div>
       </div>
     </section>
     """
 
-    actions = [
-        ("A 结果分区", "同批商品按细类目分组展示，不减少商品数", "请求点击率（主）", "搜索运营 + 产品", "每臂约 4,300 请求"),
-        ("B 细意图入口", "泛词顶部提供细分入口（女鞋/男鞋/运动鞋）", "入口点击率、分支页面 CTR", "搜索运营", "每臂约 4,300 请求"),
-        ("C 属性补全", "补充机型/材质/季节/版型等标题属性", "目标商品点击率", "商家运营", "每臂约 15 万曝光"),
-    ]
+    actions = ACTIONS
     action_rows = "".join(
         f"<tr><td><b>{html.escape(name)}</b></td><td>{html.escape(what)}</td>"
         f"<td>{html.escape(metric)}</td><td>{html.escape(owner)}</td><td>{html.escape(size)}</td></tr>"
@@ -301,7 +298,7 @@ def main() -> None:
     page7 = f"""
     <section id="page7" class="page">
       <h2>7 · 运营动作</h2>
-      <p class="lede">没有线上实验，以下为方案；主指标优先用请求点击率，商品点击率为辅助诊断。</p>
+      <p class="lede">三项分开实验，按用户分流；每用户只取首次合格搜索估算主指标。基线53%、MDE3pp、双侧α=0.05、power=80%。</p>
       <div class="card wide">
         <table><thead><tr><th>动作</th><th>做什么</th><th>主指标</th><th>负责</th><th>最小样本</th></tr></thead>
         <tbody>{action_rows}</tbody></table>

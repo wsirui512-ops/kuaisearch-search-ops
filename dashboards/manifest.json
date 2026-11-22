@@ -1,0 +1,38 @@
+{
+  "inputs": {
+    "outputs_public/age_metrics.csv": "8eeee3ea4f4ec3c643444147795ebebb9875d0725e74adad04f6439df99f0960",
+    "outputs_public/category_comparison.csv": "bde23d8f11a1f16be17d2082cae992a9cbdaa31a774682f8d2eed373520741bc",
+    "outputs_public/category_metrics.csv": "5edc198c88dffbcb1fb4b819a56d15752fac9b6bfa26583c11536e32c445b16a",
+    "outputs_public/category_residuals.csv": "5b9c5125d944567469dabf9bd27bb6443064c66b29eef1a1cf549513981ba118",
+    "outputs_public/intent_metrics.csv": "454737cc1a20705c01d42d41dfa9365f62adcd5d02397bc63a99af9f0dfc9310",
+    "outputs_public/intent_residuals.csv": "44e5cca2a4f6945ebe30f44d1df8b1c13a8d44b63dcfc9911cc15e462801a154",
+    "outputs_public/length_strata.csv": "9f767d1f0d1e9a685a5c1756f34a23d83f5e5a4a08e7805b7b041b507774b8df",
+    "outputs_public/opportunities_top30.csv": "aa969d0bd0c6b7532d7f67772ccd7a49e10ea74f85c1f0a4ac16c5bf2a28248c",
+    "outputs_public/opportunity_triage_top30.csv": "25f7f1865c578452f9aecd343b916422cab4cf4398549fa53338122c02d2246b",
+    "outputs_public/overview.csv": "a3366242f8d3872c199c63b4b54123de9781493b0ef23273bcf65205928f32cd",
+    "outputs_public/relative_time_metrics.csv": "228561eaefddee9ccac73f3dba2d3cdaaf68fc6131335856dd144b7b3ac88310",
+    "outputs_public/relevance_coverage.csv": "c1c2e0c6a4ddb88ac6f250f1d91db7c2bd97a2367b2f5854df0fcd3bbc5c9d18",
+    "outputs_public/relevance_summary.csv": "3d2eaea7203564acac06f8b0c87ea1bc3ad97cf82f956ba49b68e57e7c513cb1",
+    "outputs_public/review_coverage_summary.csv": "ad859bf2ee35bd83969e3e975ff840d4ea8de9dabfbd8d1f5fd2e3f1b8eabe1d",
+    "outputs_public/sensitivity_position.csv": "c8fc2ec7871e64b3feedb883835e961d9d943726a7a25aa7d26335f068ca6314",
+    "outputs_public/stratum_baseline.csv": "294d654188c420f5c0c2817c5c808c06d34625a1df66d8fee993192a3b786fbb",
+    "outputs_public/validation_baselines.csv": "ac3d5836930c455bf2e7704ecb330871c1e7edaa32f29928e27d1271a87ebe36",
+    "config/experiments.json": "422241b7f9de7d223af1068fabc4a63a1e03408f49bd305c1462dc585e48f47f",
+    "scripts/build_static_dashboard.py": "a10127ce3839ab26cc00da9ed850b0e542c7a2d208736c7e0482701f98da30e2",
+    "scripts/experiment_contract.py": "edbd713f9372e265d0442f407db4b5f1c05747c2e08afe268aab2570acf041bc",
+    "scripts/export_dashboard.py": "2b4ee248bbb5f7ac439b73b7be230888f688798e482655b9d3889cac717a3ba7",
+    "scripts/dashboard_contract.py": "790f8be43e53d6e8f33f516ec02fcff909988e3ad55b1a84810c9b51a258a9fd"
+  },
+  "deck_semantic_sha256": "2afe48f14affc380bac9dca2bca89791263a71e134fb9c82a77780c0ed2ee81d",
+  "assets": {
+    "dashboards/images/page01.png": "09003a79f2c275d9738cc472442058c3cf335dc20220598d9eb89af2d3b0008e",
+    "dashboards/images/page02.png": "6e4bddc273bbd3eb768f475568a487bb98a4cd984b203206f90b200ee91e7502",
+    "dashboards/images/page03.png": "adb478e39c87ef551b8b6d129223e61269e0857d6d47760fd08073e64e3742ed",
+    "dashboards/images/page04.png": "e8abb2ec8b384b7870ed58a7d4fd1f13bfc1489584a9c606c37d7c050c04faf5",
+    "dashboards/images/page05.png": "7f77cb0f8e035d2b0a47e0df31eba159dba4d9a14c1198f600007738100a1424",
+    "dashboards/images/page06.png": "77a32c67db23db8bb2da5e8bd22e3312cee9b5fcbd3c7c5e0f75fed6b7991a08",
+    "dashboards/images/page07.png": "16b2c303264464a62cd1576ffc151e0d8bc5f24b51c4ecc41836e9c126968d4d",
+    "dashboards/images/page08.png": "3fbf7d7186e530df3d77ac2f16614dc3240a17396480a3884e588adbe959dfa1",
+    "dashboards/看板.pdf": "a01ef0a477453a41dcda08dff5f889662d2b25d85cd5217dd947d5f171c75c8b"
+  }
+}

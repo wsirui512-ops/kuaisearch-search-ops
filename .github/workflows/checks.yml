@@ -20,8 +20,14 @@ jobs:
       - name: Byte-compile sources
         run: python -m compileall -q src scripts
 
-      - name: Verify headline figures against public aggregates
+      - name: Verify report cells and dashboard semantics
         run: python scripts/verify_docs.py
+
+      - name: Release rollback regression tests
+        run: python -m unittest discover -s tests
+
+      - name: Regenerate report tables
+        run: python scripts/build_report.py
 
       - name: Regenerate README charts
         run: python scripts/make_charts.py
@@ -31,7 +37,7 @@ jobs:
 
       - name: Committed artifacts must match the code
         run: |
-          git diff --exit-code -- docs/images dashboards/preview.html
+          git diff --exit-code -- docs/images dashboards/preview.html docs/analysis-report.md
           cmp docs/index.html dashboards/preview.html
           cmp docs-site/index.html dashboards/preview.html
 
