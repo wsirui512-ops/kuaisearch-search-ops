@@ -4,7 +4,7 @@
 
 `benchen4395/KuaiSearch` 在 Hugging Face 数据集卡上标注为 **MIT**。
 核查时间：2026-11-22；核查方式：`https://huggingface.co/api/datasets/benchen4395/KuaiSearch` 返回
-`tags: ["license:mit"]`、`cardData.license: "mit"`，`lastModified: 2026-04-07`。
+`tags: ["license:mit"]`、`cardData.license: "mit"`，`lastModified: 2026-04-07`。原始响应摘要已保存在 `docs/data-license.json`，便于复核。
 
 MIT 允许复制、修改、再分发与商用，条件是**保留版权与许可声明**。因此：
 

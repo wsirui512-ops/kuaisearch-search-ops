@@ -1,0 +1,23 @@
+{
+  "id": "benchen4395/KuaiSearch",
+  "lastModified": "2026-04-07T12:26:07.000Z",
+  "tags": [
+    "language:zh",
+    "license:mit",
+    "size_categories:100M<n<1B",
+    "format:json",
+    "modality:tabular",
+    "modality:text",
+    "library:datasets",
+    "library:dask",
+    "library:polars",
+    "library:mlcroissant",
+    "region:us"
+  ],
+  "cardData": {
+    "license": "mit",
+    "language": [
+      "zh"
+    ]
+  }
+}
